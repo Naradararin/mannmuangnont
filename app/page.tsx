@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
+import { ContactFab } from '@/components/contact-fab'
 import { Hero } from '@/components/sections/hero'
 import { Marquee } from '@/components/sections/marquee'
 import { Collections } from '@/components/sections/collections'
@@ -24,6 +25,7 @@ export default function Home() {
         <Booking />
       </main>
       <Footer />
+      <ContactFab />
     </>
   )
 }

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Phone } from 'lucide-react'
+import { SiLine, SiFacebook } from 'react-icons/si'
 import { useLang } from '@/lib/lang'
 
 const LINKS = {
@@ -68,7 +70,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop right: lang toggle + CTA */}
+        {/* Desktop right: lang toggle + contact icons + CTA */}
         <div className="hidden items-center gap-4 md:flex">
           <button
             onClick={toggle}
@@ -77,6 +79,34 @@ export function Navbar() {
           >
             {lang === 'th' ? 'EN' : 'TH'}
           </button>
+          <span className="h-4 w-px bg-ink/15" aria-hidden />
+          <div className="flex items-center gap-3">
+            <a
+              href="tel:0922294692"
+              aria-label={lang === 'th' ? 'โทร' : 'Call'}
+              className="text-ink/50 transition-colors hover:text-sage"
+            >
+              <Phone size={15} />
+            </a>
+            <a
+              href="https://line.me/ti/p/Hz-QrG-Dyo"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LINE"
+              className="text-ink/50 transition-colors hover:text-[#06C755]"
+            >
+              <SiLine size={15} />
+            </a>
+            <a
+              href="https://www.facebook.com/yandsun"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="text-ink/50 transition-colors hover:text-[#1877F2]"
+            >
+              <SiFacebook size={15} />
+            </a>
+          </div>
           <a
             href="#contact"
             className="rounded-full bg-sage px-5 py-2.5 font-dm-sans text-[11px] uppercase tracking-[0.18em] text-canvas transition-opacity hover:opacity-90"
@@ -128,6 +158,33 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
+              <div className="mt-1 flex items-center gap-5 px-1">
+                <a
+                  href="tel:0922294692"
+                  aria-label={lang === 'th' ? 'โทร' : 'Call'}
+                  className="flex h-11 items-center text-ink/55 transition-colors hover:text-sage"
+                >
+                  <Phone size={18} />
+                </a>
+                <a
+                  href="https://line.me/ti/p/Hz-QrG-Dyo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LINE"
+                  className="flex h-11 items-center text-ink/55 transition-colors hover:text-[#06C755]"
+                >
+                  <SiLine size={18} />
+                </a>
+                <a
+                  href="https://www.facebook.com/yandsun"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex h-11 items-center text-ink/55 transition-colors hover:text-[#1877F2]"
+                >
+                  <SiFacebook size={18} />
+                </a>
+              </div>
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}

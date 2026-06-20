@@ -1,5 +1,7 @@
 'use client'
 
+import { Phone } from 'lucide-react'
+import { SiLine, SiFacebook } from 'react-icons/si'
 import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 
@@ -19,8 +21,8 @@ const CONTENT = {
     heading: 'พูดคุยกับเรา\nได้เลย',
     sub: 'ทีมงานพร้อมให้คำปรึกษาเรื่องผ้าม่าน วอลเปเปอร์ และกระเบื้อง — ตอบกลับทุกช่องทางภายใน 24 ชั่วโมง',
     channels: [
-      { platform: 'LINE', handle: '@0922294692', href: 'https://line.me/R/ti/p/@0922294692', sub: 'กดแอดและพิมพ์หาเราได้เลย' },
-      { platform: 'Facebook', handle: 'ม่านเมืองนนท์', href: 'https://www.facebook.com/', sub: 'กดติดตามและส่งข้อความ' },
+      { platform: 'LINE', handle: 'ม่านเมืองนนท์', href: 'https://line.me/ti/p/Hz-QrG-Dyo', sub: 'กดแอดและพิมพ์หาเราได้เลย' },
+      { platform: 'Facebook', handle: 'ม่านเมืองนนท์', href: 'https://www.facebook.com/yandsun', sub: 'กดติดตามและส่งข้อความ' },
       { platform: 'โทรศัพท์', handle: '092-229-4692', href: 'tel:0922294692', sub: '' },
     ],
   },
@@ -29,8 +31,8 @@ const CONTENT = {
     heading: 'Talk to us,\nanytime.',
     sub: 'Our team is happy to advise on curtains, wallpaper, and tiles — we reply via every channel within 24 hours.',
     channels: [
-      { platform: 'LINE', handle: '@0922294692', href: 'https://line.me/R/ti/p/@0922294692', sub: 'Add and message us anytime' },
-      { platform: 'Facebook', handle: 'Maan Mueang Nont', href: 'https://www.facebook.com/', sub: 'Follow and send a message' },
+      { platform: 'LINE', handle: 'Maan Mueang Nont', href: 'https://line.me/ti/p/Hz-QrG-Dyo', sub: 'Add and message us anytime' },
+      { platform: 'Facebook', handle: 'Maan Mueang Nont', href: 'https://www.facebook.com/yandsun', sub: 'Follow and send a message' },
       { platform: 'Phone', handle: '092-229-4692', href: 'tel:0922294692', sub: '' },
     ],
   },
@@ -115,10 +117,16 @@ export function Booking() {
                   style={{ borderColor: s.border, backgroundColor: s.bg }}
                 >
                   <div
-                    className="flex size-11 shrink-0 items-center justify-center rounded-full font-dm-sans text-[13px] font-bold text-white"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-full text-white"
                     style={{ backgroundColor: s.color }}
                   >
-                    {ch.platform === 'LINE' ? 'L' : ch.platform === 'Facebook' ? 'f' : '✆'}
+                    {ch.platform === 'LINE' ? (
+                      <SiLine size={20} />
+                    ) : ch.platform === 'Facebook' ? (
+                      <SiFacebook size={20} />
+                    ) : (
+                      <Phone size={20} />
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-dm-sans text-[10px] uppercase tracking-[0.18em] text-canvas/40">
