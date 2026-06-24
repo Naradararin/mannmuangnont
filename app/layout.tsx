@@ -37,11 +37,6 @@ const ekkamai = localFont({
   variable: '--font-ekkamai',
 })
 
-const drdeco = localFont({
-  src: '../public/fonts/DRdeco.ttf',
-  variable: '--font-drdeco',
-})
-
 export const metadata: Metadata = {
   title: 'ม่านเมืองนนท์ | ผ้าม่าน วอลเปเปอร์ กระเบื้อง',
   description:
@@ -58,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="th" className={cn(sarabun.variable, cormorant.variable, dmSans.variable, ekkamai.variable, drdeco.variable, "font-sans", geist.variable)}>
+    <html lang="th" className={cn(sarabun.variable, cormorant.variable, dmSans.variable, ekkamai.variable, "font-sans", geist.variable)}>
       <body className="font-sarabun antialiased">
         <LangProvider>{children}</LangProvider>
       </body>

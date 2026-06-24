@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 
@@ -7,24 +8,24 @@ const CONTENT = {
   th: {
     eyebrow: 'เกี่ยวกับเรา',
     heading: 'ตกแต่งบ้าน\nให้เป็นคุณ',
-    body: 'ม่านเมืองนนท์ก่อตั้งด้วยความเชื่อว่าบ้านทุกหลังสมควรได้รับการดูแลอย่างพิถีพิถัน ทีมงานของเราผสมผสานประสบการณ์กว่า 10 ปีกับความเข้าใจในรสนิยมของคนไทย เราคัดสรรผ้าม่าน วอลเปเปอร์ และกระเบื้อง จากแหล่งผลิตคุณภาพทั้งในและต่างประเทศ เพื่อให้คุณมั่นใจได้ว่าทุกชิ้นที่ติดตั้งในบ้านจะสวยงามและทนทาน',
+    body: 'ม่านเมืองนนท์ก่อตั้งด้วยความเชื่อว่าบ้านทุกหลังสมควรได้รับการดูแลอย่างพิถีพิถัน ทีมงานของเราผสมผสานประสบการณ์กว่า 20 ปีกับความเข้าใจในรสนิยมของคนไทย เราคัดสรรผ้าม่าน วอลเปเปอร์ และกระเบื้อง จากแหล่งผลิตคุณภาพทั้งในและต่างประเทศ เพื่อให้คุณมั่นใจได้ว่าทุกชิ้นที่ติดตั้งในบ้านจะสวยงามและทนทาน',
     stats: [
-      { value: '10+', label: 'ปีประสบการณ์' },
+      { value: '20+', label: 'ปีประสบการณ์' },
       { value: '500+', label: 'โครงการแล้วเสร็จ' },
       { value: '3', label: 'ผลิตภัณฑ์หลัก' },
     ],
-    imageAlt: 'โชว์รูมม่านเมืองนนท์',
+    imageAlt: 'เจ้าของร้านม่านเมืองนนท์',
   },
   en: {
     eyebrow: 'About Us',
     heading: 'Making every\nhome yours.',
-    body: 'Maan Mueang Nont was founded on the belief that every home deserves meticulous care. Our team blends over 10 years of expertise with a deep understanding of Thai aesthetics, curating curtains, wallpaper, and tiles from quality sources both local and international — so every piece installed in your home is beautiful and built to last.',
+    body: 'Maan Mueang Nont was founded on the belief that every home deserves meticulous care. Our team blends over 20 years of expertise with a deep understanding of Thai aesthetics, curating curtains, wallpaper, and tiles from quality sources both local and international — so every piece installed in your home is beautiful and built to last.',
     stats: [
-      { value: '10+', label: 'Years Experience' },
+      { value: '20+', label: 'Years Experience' },
       { value: '500+', label: 'Projects Completed' },
       { value: '3', label: 'Core Products' },
     ],
-    imageAlt: 'Maan Mueang Nont showroom',
+    imageAlt: 'The owners of Maan Mueang Nont',
   },
 }
 
@@ -42,12 +43,14 @@ export function About() {
         {/* Image */}
         <FadeIn>
           <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
-            <div className="h-full w-full bg-gradient-to-br from-[#c9b99a] via-[#b8a06a] to-[#7a6040]" />
-            <div className="pointer-events-none absolute inset-0 flex items-end p-6">
-              <span className="rounded-full bg-canvas/90 px-3 py-1.5 font-dm-sans text-[10px] uppercase tracking-[0.15em] text-ink/60">
-                {lang === 'th' ? '← ใส่รูปโชว์รูม' : '← Add showroom photo'}
-              </span>
-            </div>
+            <Image
+              src="/images/hero/16424.jpg"
+              alt={c.imageAlt}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={90}
+              style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+            />
           </div>
         </FadeIn>
 

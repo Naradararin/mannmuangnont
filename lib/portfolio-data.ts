@@ -21,7 +21,9 @@ export interface PortfolioEntry {
   imageType: ImageType
   imageUrls: string[]
   processImageUrls?: string[]
+  featuredOrder?: number
   isPlaceholder?: boolean
+  detailHref?: string
 }
 
 export const PORTFOLIO: PortfolioEntry[] = [
@@ -40,12 +42,12 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/casa-ville-ratchaphruek-16-06-26/726495140_1468822361924865_1653762496845575414_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/722910134_1468822211924880_6490375548028892982_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/725560068_1468822271924874_8402858702385845893_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/725574425_1468821928591575_5933533179560703220_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/725715449_1468822425258192_3106751726433291535_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/725793365_1468822618591506_7164118646067337614_n.jpg',
-      '/images/portfolio/casa-ville-ratchaphruek-16-06-26/726495140_1468822361924865_1653762496845575414_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/726564788_1468821998591568_5313272734727901345_n.jpg',
       '/images/portfolio/casa-ville-ratchaphruek-16-06-26/727159126_1468822091924892_7576060768715655002_n.jpg',
     ],
@@ -86,9 +88,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
+    featuredOrder: 2,
     imageUrls: [
-      '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/677670807_1420006643473104_3262539898860969589_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/678231774_1420007453473023_5927893980942885921_n.jpg',
+      '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/677670807_1420006643473104_3262539898860969589_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/680235279_1420008410139594_3656819354133188649_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/680467671_1420006556806446_1872808121291217578_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-24-04-26/682072685_1420008783472890_1802727121274502533_n.jpg',
@@ -112,10 +115,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/673022805_1415808283892940_7332146149359432485_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/672448687_1415808600559575_8210611652929230269_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/672680155_1415808457226256_8765265326686597119_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/672680527_1415809810559454_1084471745686103420_n.jpg',
-      '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/673022805_1415808283892940_7332146149359432485_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-04-26/673544154_1415808247226277_1602959395821069246_n.jpg',
     ],
   },
@@ -133,9 +136,9 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/modiz-vault-kaset-sripatum-26-03-26/656935785_1395978842542551_7313288147563425218_n.jpg',
       '/images/portfolio/modiz-vault-kaset-sripatum-26-03-26/654271125_1395978705875898_5617487944749556739_n.jpg',
       '/images/portfolio/modiz-vault-kaset-sripatum-26-03-26/656681765_1395979105875858_5053777056536585840_n.jpg',
-      '/images/portfolio/modiz-vault-kaset-sripatum-26-03-26/656935785_1395978842542551_7313288147563425218_n.jpg',
       '/images/portfolio/modiz-vault-kaset-sripatum-26-03-26/657155290_1395978969209205_6034979125383000424_n.jpg',
     ],
   },
@@ -153,13 +156,13 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านน็อคดาวน์', en: 'Prefab House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/653705113_1387827826690986_3526528730874335197_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/651370926_1387827953357640_3795094491321877625_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/651673082_1387827790024323_3018503257745763724_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/651782703_1387827690024333_3370658613737563509_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/651894637_1387827850024317_1833645839823971643_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/653434783_1387827980024304_2265176503648804778_n.jpg',
       '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/653698087_1387827740024328_4314302429055370817_n.jpg',
-      '/images/portfolio/the-village-hathairat-wongwaen-17-03-26/653705113_1387827826690986_3526528730874335197_n.jpg',
     ],
   },
   {
@@ -176,10 +179,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'ทาวน์เฮ้าส์', en: 'Townhouse' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/pathum-thani-sai-nai-alley-31-01-26/624246675_1349373787203057_2953491053808605381_n.jpg',
       '/images/portfolio/pathum-thani-sai-nai-alley-31-01-26/622732632_1349373310536438_4343242019666763062_n.jpg',
       '/images/portfolio/pathum-thani-sai-nai-alley-31-01-26/623804530_1349373357203100_1503600649034960064_n.jpg',
       '/images/portfolio/pathum-thani-sai-nai-alley-31-01-26/624160661_1349373410536428_3560166351839524423_n.jpg',
-      '/images/portfolio/pathum-thani-sai-nai-alley-31-01-26/624246675_1349373787203057_2953491053808605381_n.jpg',
     ],
   },
   {
@@ -196,9 +199,9 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/pattanakarn-road-prawet-district-10-01-26/613153205_1330946939045742_3379042826390421622_n.jpg',
       '/images/portfolio/pattanakarn-road-prawet-district-10-01-26/612164116_1330946899045746_3100939348044526468_n.jpg',
       '/images/portfolio/pattanakarn-road-prawet-district-10-01-26/612319835_1330946842379085_7501153133083905986_n.jpg',
-      '/images/portfolio/pattanakarn-road-prawet-district-10-01-26/613153205_1330946939045742_3379042826390421622_n.jpg',
       '/images/portfolio/pattanakarn-road-prawet-district-10-01-26/614577727_1330947039045732_5145100612186536441_n.jpg',
     ],
   },
@@ -216,11 +219,11 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/the-centro-rattanathibet-03-12-25/594847381_1301947798612323_7137541025017489473_n.jpg',
       '/images/portfolio/the-centro-rattanathibet-03-12-25/590793620_1301947878612315_6522542274377566147_n.jpg',
       '/images/portfolio/the-centro-rattanathibet-03-12-25/590922939_1301947581945678_8220897091396205702_n.jpg',
       '/images/portfolio/the-centro-rattanathibet-03-12-25/592482659_1301947931945643_3835422557794548330_n.jpg',
       '/images/portfolio/the-centro-rattanathibet-03-12-25/593961366_1301947301945706_348350005924224003_n.jpg',
-      '/images/portfolio/the-centro-rattanathibet-03-12-25/594847381_1301947798612323_7137541025017489473_n.jpg',
     ],
   },
   {
@@ -237,10 +240,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/nichatra-22-11-25/586458922_1293619806111789_190169419457090829_n.jpg',
       '/images/portfolio/nichatra-22-11-25/584732923_1293537752786661_1147035787840238256_n.jpg',
       '/images/portfolio/nichatra-22-11-25/584761732_1293536882786748_6684385390617824142_n.jpg',
       '/images/portfolio/nichatra-22-11-25/586210611_1293537692786667_4240132023377969149_n.jpg',
-      '/images/portfolio/nichatra-22-11-25/586458922_1293619806111789_190169419457090829_n.jpg',
     ],
   },
   {
@@ -261,10 +264,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565354716_1264164572390646_7812664522507677439_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565132731_1264164292390674_474232947168630976_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565153130_1264166189057151_3443159288510591248_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565245640_1264165395723897_4552610386032706682_n.jpg',
-      '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565354716_1264164572390646_7812664522507677439_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565657132_1264165185723918_1497057227736353479_n.jpg',
       '/images/portfolio/baanwangjaru-bangnuathong-19-10-25/565662050_1264162879057482_7504328128152072504_n.jpg',
     ],
@@ -282,6 +285,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
+    featuredOrder: 1,
     imageUrls: [
       '/images/portfolio/kave-pop-salaya-19-10-25/564234071_1264136789060091_1744282931963897644_n.jpg',
       '/images/portfolio/kave-pop-salaya-19-10-25/565178509_1264136742393429_4710503772792484059_n.jpg',
@@ -305,9 +309,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
+    featuredOrder: 3,
     imageUrls: [
-      '/images/portfolio/the-lofts-asoke-18-12-24/486303565_1094864619320643_825280101206584899_n.jpg',
       '/images/portfolio/the-lofts-asoke-18-12-24/486380288_1094864549320650_2630213902559893738_n.jpg',
+      '/images/portfolio/the-lofts-asoke-18-12-24/486303565_1094864619320643_825280101206584899_n.jpg',
       '/images/portfolio/the-lofts-asoke-18-12-24/486491958_1094864662653972_5821830896873508742_n.jpg',
       '/images/portfolio/the-lofts-asoke-18-12-24/486787783_1094864685987303_8442983500941022607_n.jpg',
       '/images/portfolio/the-lofts-asoke-18-12-24/486835396_1094864495987322_243277181481049123_n.jpg',
@@ -329,8 +334,8 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
     imageUrls: [
-      '/images/portfolio/metro-park-sathorn-02-12-24/486669972_1094364639370641_5752168328935887242_n.jpg',
       '/images/portfolio/metro-park-sathorn-02-12-24/486670631_1094364746037297_302241885515330594_n.jpg',
+      '/images/portfolio/metro-park-sathorn-02-12-24/486669972_1094364639370641_5752168328935887242_n.jpg',
       '/images/portfolio/metro-park-sathorn-02-12-24/486805911_1094364709370634_9150135470929528241_n.jpg',
       '/images/portfolio/metro-park-sathorn-02-12-24/486951922_1094364696037302_2432163100104657934_n.jpg',
       '/images/portfolio/metro-park-sathorn-02-12-24/487139831_1094364692703969_1637209602295307800_n.jpg',
@@ -380,13 +385,13 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486322351_1090831096390662_8035198892147984858_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/485792022_1090831396390632_2291260014886287786_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486045018_1090831113057327_5171535127150620584_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486059630_1090831116390660_7278773297664978109_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486096682_1090831373057301_8143600458277913272_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486165039_1090831036390668_2270457461784836760_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486248495_1090831273057311_1024470216601095097_n.jpg',
-      '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486322351_1090831096390662_8035198892147984858_n.jpg',
       '/images/portfolio/chuan-chuen-chaengwattana-village-04-06-24/486377615_1090831086390663_4904353078407828354_n.jpg',
     ],
   },
@@ -406,10 +411,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/nichatra-high-end-06-02-26/628420878_1353620610111708_633601835838337285_n.jpg',
       '/images/portfolio/nichatra-high-end-06-02-26/625385151_1353620853445017_5517070432750183485_n.jpg',
       '/images/portfolio/nichatra-high-end-06-02-26/625882766_1353620800111689_2481133927381368259_n.jpg',
       '/images/portfolio/nichatra-high-end-06-02-26/627748659_1353620653445037_78370017280790537_n.jpg',
-      '/images/portfolio/nichatra-high-end-06-02-26/628420878_1353620610111708_633601835838337285_n.jpg',
       '/images/portfolio/nichatra-high-end-06-02-26/629139006_1353620713445031_3891161072916215674_n.jpg',
     ],
   },
@@ -426,12 +431,13 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
+    featuredOrder: 3,
     imageUrls: [
+      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/555042600_1242494951224275_1920910821692335161_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/553072294_1242495747890862_607548501180178725_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/554386923_1242495987890838_6759673489036756982_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/554434461_1242494884557615_1438978971650447118_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/554571338_1242495867890850_8461825212603897629_n.jpg',
-      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/555042600_1242494951224275_1920910821692335161_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/555044189_1242494784557625_7134704199586568121_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/555047187_1242496047890832_3149688549087233317_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-26-09-25/555451454_1242495164557587_1436984374824677581_n.jpg',
@@ -454,6 +460,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/520280014_1182018863938551_3946851036892814065_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/517682214_1182018927271878_2141373306147255484_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/517695339_1182019090605195_4363380387951437083_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/518252311_1182019273938510_8513987723393460024_n.jpg',
@@ -463,7 +470,6 @@ export const PORTFOLIO: PortfolioEntry[] = [
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/518796157_1182019620605142_8437311466587748735_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/519470270_1182019040605200_5235673934647644084_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/519673303_1182019010605203_8744988547981956310_n.jpg',
-      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/520280014_1182018863938551_3946851036892814065_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-16-07-25/521474337_1182019353938502_5662887887607571473_n.jpg',
     ],
   },
@@ -503,9 +509,9 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/nichatra-high-end-03-07-25/514262606_1171732488300522_2646324643825508912_n.jpg',
       '/images/portfolio/nichatra-high-end-03-07-25/514254530_1171732091633895_7145505815615436022_n.jpg',
       '/images/portfolio/nichatra-high-end-03-07-25/514257234_1171732818300489_6665948734857102990_n.jpg',
-      '/images/portfolio/nichatra-high-end-03-07-25/514262606_1171732488300522_2646324643825508912_n.jpg',
       '/images/portfolio/nichatra-high-end-03-07-25/514272423_1171732024967235_2418236443428718042_n.jpg',
       '/images/portfolio/nichatra-high-end-03-07-25/514275208_1171732301633874_4854107849496019650_n.jpg',
       '/images/portfolio/nichatra-high-end-03-07-25/514353055_1171731908300580_7191073399010684712_n.jpg',
@@ -539,10 +545,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511163685_1163781279095643_4258434193113619707_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/510998587_1163780925762345_1474713272211654992_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511096006_1163781012429003_4241752391837209352_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511148336_1163781092428995_7256898992639310298_n.jpg',
-      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511163685_1163781279095643_4258434193113619707_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511165472_1163780789095692_787932397921275546_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-24-06-25/511271334_1163780635762374_5742367485247586769_n.jpg',
     ],
@@ -560,9 +566,11 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
+    featuredOrder: 2,
     imageUrls: [
+      // Clean, no-watermark cover (was 494070972…_n.jpg, which had a watermark).
+      '/images/hero/ddasdaavdftf.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-30-04-25/494050676_1122019789938459_895704875691398311_n.jpg',
-      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-30-04-25/494070972_1122019653271806_8595350185530432400_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-30-04-25/494098114_1122019686605136_7230707499213618536_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-30-04-25/494197858_1122019723271799_2067413315173681888_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-30-04-25/494634726_1122020273271744_7760649265083688186_n.jpg',
@@ -587,6 +595,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/492219358_1112019630938475_5063944754424876728_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/490981001_1112019830938455_6058524230342436060_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/491160417_1112020910938347_8306890459717770598_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/491264883_1112021124271659_3561980112455088136_n.jpg',
@@ -595,7 +604,6 @@ export const PORTFOLIO: PortfolioEntry[] = [
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/491826760_1112021074271664_6055301616866546347_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/491873298_1112020817605023_7547993222209733167_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/491971708_1112020747605030_314241053447250296_n.jpg',
-      '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/492219358_1112019630938475_5063944754424876728_n.jpg',
       '/images/portfolio/soi-phet-kasem-51-high-end-17-04-25/492252229_1112020504271721_8898730097855430132_n.jpg',
     ],
   },
@@ -613,10 +621,10 @@ export const PORTFOLIO: PortfolioEntry[] = [
     propertyType: { th: 'คอนโด', en: 'Condo' },
     imageType: 'result-only',
     imageUrls: [
+      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/489068103_1103891448417960_6722455699261952259_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/488865299_1103895018417603_4049896413960044929_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/488886294_1103893195084452_4993041488004662597_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/488935222_1103891618417943_8847842624393147369_n.jpg',
-      '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/489068103_1103891448417960_6722455699261952259_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/489222769_1103892011751237_7974006022616186973_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/489283392_1103895361750902_4417588474835639030_n.jpg',
       '/images/portfolio/atmoz-palacio-ladprao-wanghin-high-end-09-03-25/489473869_1103895131750925_1164325077883662417_n.jpg',
@@ -643,13 +651,14 @@ export const PORTFOLIO: PortfolioEntry[] = [
     lightBlocking: 'Dimout 80-90%',
     propertyType: { th: 'บ้านเดี่ยว', en: 'Detached House' },
     imageType: 'result-only',
+    featuredOrder: 1,
     imageUrls: [
+      '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486829305_1095747405899031_1641953211838636839_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486666557_1095747002565738_2545095622512652727_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486672388_1095151112625327_8710768517893518078_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486713165_1095747025899069_6826125920834598607_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486811324_1095747392565699_804917897544678150_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486824391_1095747275899044_308777405937283432_n.jpg',
-      '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486829305_1095747405899031_1641953211838636839_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/486967012_1095747259232379_3421928630440554319_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/487128880_1095747385899033_601038362133267568_n.jpg',
       '/images/portfolio/chiang-rak-noi-high-end-25-02-25/487130379_1095747399232365_8615969887857560125_n.jpg',
@@ -727,7 +736,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     ],
   },
 
-  // ===== Luxury (1 entry — images pending sort by owner) =====
+  // ===== Luxury =====
   {
     id: 'thep-rak-49-2024-03',
     tier: 'Luxury',
@@ -744,9 +753,9 @@ export const PORTFOLIO: PortfolioEntry[] = [
     ],
     lightBlocking: 'Blackout 100%',
     propertyType: { th: 'คฤหาสน์', en: 'Mansion' },
-    imageType: 'process-and-result',
-    imageUrls: [],
-    processImageUrls: ['', ''],
+    imageType: 'result-only',
+    imageUrls: ['/images/portfolio/thep-rak-49/Premium/473279.jpg'],
+    detailHref: '/portfolio/thep-rak-49',
   },
 ]
 

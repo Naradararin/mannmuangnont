@@ -53,8 +53,15 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 md:px-10">
         {/* Logo */}
-        <a href="#" className="font-cormorant text-xl italic text-ink">
-          ม่านเมืองนนท์
+        <a href="#" className="flex items-center gap-2.5">
+          <img
+            src="/images/brand/logo.png"
+            alt="ม่านเมืองนนท์"
+            className="h-9 w-auto object-contain"
+          />
+          <span className="font-sov-wong hidden text-xl text-ink sm:block">
+            {lang === 'th' ? 'ม่านเมืองนนท์' : 'Maan Mueang Nont'}
+          </span>
         </a>
 
         {/* Desktop nav */}

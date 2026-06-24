@@ -1,6 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useRef, useMemo, useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 import { PORTFOLIO, Tier, PortfolioEntry } from '@/lib/portfolio-data'
@@ -12,6 +14,12 @@ const CAT_EN: Record<string, string> = {
   'ผ้าม่าน': 'Curtains',
   'วอลเปเปอร์': 'Wallpaper',
   'กระเบื้องยาง': 'Vinyl Flooring',
+}
+// EN labels for tier pills (canonical key is the Thai/English tier value)
+const TIER_EN: Record<Tier, string> = {
+  'ทั่วไป': 'General',
+  'High-End': 'High-End',
+  'Luxury': 'Luxury',
 }
 
 // Luxury design tokens
@@ -66,7 +74,8 @@ export function PortfolioGallery() {
     () =>
       tierEntries
         .filter(e => !cat || e.mainCategories.some(c => c.th === cat))
-        .filter(e => !tag || e.curtainTypes.some(t => t.th === tag)),
+        .filter(e => !tag || e.curtainTypes.some(t => t.th === tag))
+        .sort((a, b) => (a.featuredOrder ?? Infinity) - (b.featuredOrder ?? Infinity)),
     [tierEntries, cat, tag],
   )
 
@@ -150,6 +159,14 @@ export function PortfolioGallery() {
           >
             {lang === 'th' ? 'ผลงานของเรา' : 'Our Work'}
           </h2>
+          <p
+            className="mt-3 font-sarabun text-sm"
+            style={{ color: isLux ? L.muted : 'rgba(20,18,15,0.5)' }}
+          >
+            {lang === 'th'
+              ? 'คัดสรรผลงานที่บันทึกไว้ตลอด 3 ปีที่ผ่านมา'
+              : 'Highlights from the past 3 years of documented installations'}
+          </p>
         </FadeIn>
 
         {/* Tier tabs */}
@@ -170,7 +187,7 @@ export function PortfolioGallery() {
                   </span>
                 </span>
               ) : (
-                t
+                lang === 'en' ? TIER_EN[t] : t
               )}
             </button>
           ))}
@@ -243,26 +260,65 @@ export function PortfolioGallery() {
 
 function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' }) {
   const [mainIdx, setMainIdx] = useState(0)
+  const total = entry.imageUrls.length
   const mainUrl = entry.imageUrls[mainIdx] ?? ''
-  const hasMultiple = entry.imageUrls.length > 1
+  const hasMultiple = total > 1
+  const touchX = useRef<number | null>(null)
+
+  function prev() { setMainIdx(i => (i - 1 + total) % total) }
+  function next() { setMainIdx(i => (i + 1) % total) }
 
   return (
     <div className="group overflow-hidden rounded-sm border border-surface bg-canvas transition-shadow hover:shadow-md">
       {/* Main image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface to-sage/15">
+      <div
+        className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface to-sage/15"
+        onTouchStart={hasMultiple ? (e) => { touchX.current = e.touches[0].clientX } : undefined}
+        onTouchEnd={hasMultiple ? (e) => {
+          if (touchX.current === null) return
+          const dx = e.changedTouches[0].clientX - touchX.current
+          if (Math.abs(dx) > 40) dx < 0 ? next() : prev()
+          touchX.current = null
+        } : undefined}
+      >
         {mainUrl ? (
-          <img src={mainUrl} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+          <Image
+            src={mainUrl}
+            alt=""
+            fill
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
         ) : (
           <span className="absolute inset-0 flex items-center justify-center font-dm-sans text-[10px] uppercase tracking-[0.2em] text-sage/30">
             {lang === 'th' ? 'รูปภาพ' : 'Photo'}
           </span>
         )}
+        {/* Prev / Next arrows */}
+        {hasMultiple && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); prev() }}
+              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
+              aria-label="Previous photo"
+            >
+              ‹
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); next() }}
+              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
+              aria-label="Next photo"
+            >
+              ›
+            </button>
+          </>
+        )}
         <span className="absolute bottom-3 left-3 rounded-full bg-canvas/90 px-2.5 py-1 font-dm-sans text-[10px] uppercase tracking-[0.1em] text-ink">
           {entry.mainCategories.map(c => c[lang]).join(' · ')}
         </span>
-        {entry.imageUrls.length > 1 && (
+        {hasMultiple && (
           <span className="absolute right-3 top-3 rounded-full bg-ink/65 px-2 py-0.5 font-dm-sans text-[9px] text-canvas">
-            {mainIdx + 1} / {entry.imageUrls.length}
+            {mainIdx + 1} / {total}
           </span>
         )}
         {entry.isPlaceholder && (
@@ -282,13 +338,13 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
             <button
               key={i}
               onClick={() => setMainIdx(i)}
-              className={`h-11 w-11 shrink-0 overflow-hidden rounded-[2px] border-2 transition-opacity ${
+              className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-[2px] border-2 transition-opacity ${
                 i === mainIdx
                   ? 'border-sage opacity-100'
                   : 'border-transparent opacity-50 hover:opacity-80'
               }`}
             >
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <Image src={url} alt="" fill sizes="44px" quality={30} loading="lazy" className="object-cover" />
             </button>
           ))}
         </div>
@@ -324,157 +380,144 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
 }
 
 // ---------------------------------------------------------------------------
-// Luxury card — gold/espresso theme, process+result gallery
+// Luxury card — gold/espresso theme
 // ---------------------------------------------------------------------------
 
 function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' }) {
   const isProcessResult = entry.imageType === 'process-and-result'
+  const hasLink = !!entry.detailHref
 
-  return (
-    <div
-      className="group overflow-hidden rounded-sm transition-shadow hover:shadow-[0_4px_32px_rgba(201,168,76,0.12)]"
-      style={{ background: L.card, border: `1px solid ${L.border}` }}
-    >
-      {/* Gallery area */}
-      {isProcessResult ? (
-        <>
-          <div className="grid grid-cols-3 gap-px" style={{ backgroundColor: L.border }}>
-            {/* Process slots */}
-            {[0, 1].map(i => {
-              const url = entry.processImageUrls?.[i] ?? ''
-              return (
-                <div
-                  key={i}
-                  className="relative aspect-square overflow-hidden"
-                  style={{ background: L.slot }}
-                >
-                  {url ? (
-                    <img src={url} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full flex-col items-center justify-center gap-0.5">
-                      <span
-                        className="font-dm-sans text-[8px] uppercase tracking-[0.15em]"
-                        style={{ color: L.gold, opacity: 0.4 }}
-                      >
-                        {lang === 'th' ? 'กระบวนการ' : 'Process'}
-                      </span>
-                      <span className="font-dm-sans text-[8px]" style={{ color: L.gold, opacity: 0.2 }}>
-                        {i + 1}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-            {/* Result slot */}
-            <div
-              className="relative aspect-square overflow-hidden"
-              style={{ background: L.slot }}
-            >
-              {entry.imageUrls[0] ? (
-                <img src={entry.imageUrls[0]} alt="" className="h-full w-full object-cover" />
+  const imageArea = isProcessResult ? (
+    <>
+      <div className="grid grid-cols-3 gap-px" style={{ backgroundColor: L.border }}>
+        {[0, 1].map(i => {
+          const url = entry.processImageUrls?.[i] ?? ''
+          return (
+            <div key={i} className="relative aspect-square overflow-hidden" style={{ background: L.slot }}>
+              {url ? (
+                <Image src={url} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
               ) : (
-                <div className="flex h-full items-center justify-center">
-                  <span
-                    className="font-dm-sans text-[8px] uppercase tracking-[0.15em]"
-                    style={{ color: L.gold, opacity: 0.4 }}
-                  >
-                    {lang === 'th' ? 'ผลลัพธ์' : 'Result'}
+                <div className="flex h-full flex-col items-center justify-center gap-0.5">
+                  <span className="font-dm-sans text-[8px] uppercase tracking-[0.15em]" style={{ color: L.gold, opacity: 0.4 }}>
+                    {lang === 'th' ? 'กระบวนการ' : 'Process'}
                   </span>
+                  <span className="font-dm-sans text-[8px]" style={{ color: L.gold, opacity: 0.2 }}>{i + 1}</span>
                 </div>
               )}
             </div>
-          </div>
-          {/* Gallery label strip */}
-          <div
-            className="flex items-center justify-center py-1.5"
-            style={{ background: L.strip }}
-          >
-            <span
-              className="font-dm-sans text-[8px] uppercase tracking-[0.2em]"
-              style={{ color: L.gold, opacity: 0.7 }}
-            >
-              {lang === 'th' ? 'กระบวนการ + ผลลัพธ์' : 'Process + Result'}
-            </span>
-          </div>
-        </>
+          )
+        })}
+        <div className="relative aspect-square overflow-hidden" style={{ background: L.slot }}>
+          {entry.imageUrls[0] ? (
+            <Image src={entry.imageUrls[0]} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="font-dm-sans text-[8px] uppercase tracking-[0.15em]" style={{ color: L.gold, opacity: 0.4 }}>
+                {lang === 'th' ? 'ผลลัพธ์' : 'Result'}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center justify-center py-1.5" style={{ background: L.strip }}>
+        <span className="font-dm-sans text-[8px] uppercase tracking-[0.2em]" style={{ color: L.gold, opacity: 0.7 }}>
+          {lang === 'th' ? 'กระบวนการ + ผลลัพธ์' : 'Process + Result'}
+        </span>
+      </div>
+    </>
+  ) : (
+    <div className="relative aspect-[4/3] overflow-hidden" style={{ background: L.slot }}>
+      {entry.imageUrls[0] ? (
+        <Image
+          src={entry.imageUrls[0]}
+          alt=""
+          fill
+          sizes="(max-width: 639px) 100vw, 50vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        />
       ) : (
-        <div className="relative aspect-[4/3]" style={{ background: L.slot }}>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="font-dm-sans text-[10px] uppercase tracking-[0.15em]"
-              style={{ color: L.gold, opacity: 0.3 }}
-            >
-              {lang === 'th' ? 'รูปภาพ' : 'Photo'}
-            </span>
-          </div>
-          <span
-            className="absolute bottom-3 left-3 rounded-full px-2.5 py-1 font-dm-sans text-[10px] uppercase tracking-[0.1em]"
-            style={{ background: 'rgba(201,168,76,0.1)', color: L.gold }}
-          >
-            {entry.mainCategories.map(c => c[lang]).join(' · ')}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="font-dm-sans text-[10px] uppercase tracking-[0.15em]" style={{ color: L.gold, opacity: 0.3 }}>
+            {lang === 'th' ? 'รูปภาพ' : 'Photo'}
           </span>
         </div>
       )}
-
-      {/* Info */}
-      <div className="p-4" style={{ borderTop: `1px solid ${L.border}` }}>
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="font-dm-sans text-[10px]" style={{ color: L.muted }}>
-              {entry.date} · {entry.province[lang]}
-            </p>
-            <p className="mt-1 font-sarabun text-sm leading-[1.6]" style={{ color: L.champ }}>
-              {entry.location[lang]}
-            </p>
-          </div>
-          {entry.isPlaceholder && (
-            <span
-              className="mt-0.5 shrink-0 rounded-full border px-2 py-0.5 font-dm-sans text-[8px] uppercase tracking-[0.1em]"
-              style={{ borderColor: L.border, color: L.muted }}
-            >
-              demo
-            </span>
-          )}
+      {/* Hover overlay for linked cards */}
+      {hasLink && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ background: 'rgba(13,10,5,0.5)' }}>
+          <span
+            className="rounded-full px-5 py-2 font-dm-sans text-[11px] uppercase tracking-[0.14em]"
+            style={{ border: `1px solid rgba(201,168,76,0.65)`, color: L.gold }}
+          >
+            {lang === 'th' ? 'ดูโปรเจกต์' : 'View Project'}
+          </span>
         </div>
+      )}
+      <span
+        className="absolute bottom-3 left-3 rounded-full px-2.5 py-1 font-dm-sans text-[10px] uppercase tracking-[0.1em]"
+        style={{ background: 'rgba(201,168,76,0.1)', color: L.gold }}
+      >
+        {entry.mainCategories.map(c => c[lang]).join(' · ')}
+      </span>
+    </div>
+  )
 
-        {/* Multi-category badges (for combined projects) */}
-        {entry.mainCategories.length > 1 && (
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {entry.mainCategories.map(c => (
-              <span
-                key={c.th}
-                className="rounded-full border px-2.5 py-0.5 font-dm-sans text-[10px]"
-                style={{ borderColor: 'rgba(201,168,76,0.22)', color: L.gold }}
-              >
-                {c[lang]}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {entry.curtainTypes.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {entry.curtainTypes.map(t => (
-              <span
-                key={t.th}
-                className="rounded-full border px-2.5 py-0.5 font-dm-sans text-[10px]"
-                style={{ borderColor: L.border, color: L.gold }}
-              >
-                {t[lang]}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div
-          className="mt-2.5 flex flex-wrap gap-x-4 font-dm-sans text-[10px]"
-          style={{ color: L.muted }}
-        >
-          {entry.lightBlocking !== '-' && <span>{entry.lightBlocking}</span>}
-          {entry.propertyType[lang] !== '-' && <span>{entry.propertyType[lang]}</span>}
+  const infoArea = (
+    <div className="p-4" style={{ borderTop: `1px solid ${L.border}` }}>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="font-dm-sans text-[10px]" style={{ color: L.muted }}>
+            {entry.date} · {entry.province[lang]}
+          </p>
+          <p className="mt-1 font-sarabun text-sm leading-[1.6]" style={{ color: L.champ }}>
+            {entry.location[lang]}
+          </p>
         </div>
+        {hasLink && (
+          <span className="mt-1 shrink-0 font-dm-sans text-[10px]" style={{ color: L.muted }}>→</span>
+        )}
       </div>
+      {entry.mainCategories.length > 1 && (
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {entry.mainCategories.map(c => (
+            <span key={c.th} className="rounded-full border px-2.5 py-0.5 font-dm-sans text-[10px]" style={{ borderColor: 'rgba(201,168,76,0.22)', color: L.gold }}>
+              {c[lang]}
+            </span>
+          ))}
+        </div>
+      )}
+      {entry.curtainTypes.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {entry.curtainTypes.map(t => (
+            <span key={t.th} className="rounded-full border px-2.5 py-0.5 font-dm-sans text-[10px]" style={{ borderColor: L.border, color: L.gold }}>
+              {t[lang]}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-2.5 flex flex-wrap gap-x-4 font-dm-sans text-[10px]" style={{ color: L.muted }}>
+        {entry.lightBlocking !== '-' && <span>{entry.lightBlocking}</span>}
+        {entry.propertyType[lang] !== '-' && <span>{entry.propertyType[lang]}</span>}
+      </div>
+    </div>
+  )
+
+  const cls = 'group overflow-hidden rounded-sm transition-shadow hover:shadow-[0_4px_32px_rgba(201,168,76,0.14)]'
+  const sty = { background: L.card, border: `1px solid ${L.border}` }
+
+  if (hasLink) {
+    return (
+      <Link href={entry.detailHref!} className={cls} style={sty}>
+        {imageArea}
+        {infoArea}
+      </Link>
+    )
+  }
+
+  return (
+    <div className={cls} style={sty}>
+      {imageArea}
+      {infoArea}
     </div>
   )
 }

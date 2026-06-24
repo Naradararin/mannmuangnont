@@ -13,7 +13,7 @@ const CONTENT = {
       { label: 'กระเบื้อง', href: '#collections' },
       { label: 'ผลงาน', href: '#portfolio' },
       { label: 'เกี่ยวกับเรา', href: '#about' },
-      { label: 'นัดสำรวจฟรี', href: '#booking' },
+      { label: 'นัดสำรวจฟรี', href: 'https://www.facebook.com/yandsun' },
     ],
     address: ['55/76 หมู่ที่ 1 ต.บางใหญ่', 'อ.บางใหญ่ จ.นนทบุรี 11140'],
     contactHeading: 'ติดต่อเรา',
@@ -30,7 +30,7 @@ const CONTENT = {
       { label: 'Floor Tiles', href: '#collections' },
       { label: 'Portfolio', href: '#portfolio' },
       { label: 'About', href: '#about' },
-      { label: 'Book a Visit', href: '#booking' },
+      { label: 'Book a Visit', href: 'https://www.facebook.com/yandsun' },
     ],
     address: ['55/76 Moo 1, Bang Yai Sub-district', 'Bang Yai District, Nonthaburi 11140'],
     contactHeading: 'Contact',
@@ -51,7 +51,21 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <p className="font-cormorant text-xl italic">ม่านเมืองนนท์</p>
+            <div className="flex items-center gap-2.5">
+              <span
+                className="inline-flex items-center justify-center rounded-sm p-1"
+                style={{ background: 'rgba(245,241,232,0.10)' }}
+              >
+                <img
+                  src="/images/brand/logo.png"
+                  alt="ม่านเมืองนนท์"
+                  className="h-7 w-auto object-contain"
+                />
+              </span>
+              <p className="font-sarabun text-xl font-light">
+                {lang === 'th' ? 'ม่านเมืองนนท์' : 'Maan Mueang Nont'}
+              </p>
+            </div>
             <p className="mt-4 max-w-xs font-sarabun text-sm leading-[1.8] text-canvas/65">
               {c.tagline}
             </p>
@@ -59,15 +73,20 @@ export function Footer() {
 
           {/* Nav */}
           <nav className="flex flex-col gap-3">
-            {c.nav.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="w-fit font-dm-sans text-[13px] tracking-[0.08em] text-canvas/65 transition-colors hover:text-canvas"
-              >
-                {link.label}
-              </a>
-            ))}
+            {c.nav.map((link) => {
+              const isExternal = link.href.startsWith('http')
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className="w-fit font-dm-sans text-[13px] tracking-[0.08em] text-canvas/65 transition-colors hover:text-canvas"
+                >
+                  {link.label}
+                </a>
+              )
+            })}
           </nav>
 
           {/* Contact */}

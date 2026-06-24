@@ -2,6 +2,22 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* ===== Brand Name Font ===== */
+@font-face {
+  font-family: 'SOV_Wong';
+  src: url('/fonts/custom/SOV_wong.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  /* Exclude Thai (U+0E00–U+0E7F) so Sarabun renders Thai in brand colors */
+  unicode-range: U+0000-U+0DFF, U+0E80-U+FFFF;
+}
+
+.font-sov-wong {
+  font-family: 'SOV_Wong', var(--font-sarabun), sans-serif;
+  font-palette: normal;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -55,7 +71,6 @@
   --font-cormorant: var(--font-cormorant);
   --font-dm-sans: var(--font-dm-sans);
   --font-ekkamai: var(--font-ekkamai);
-  --font-drdeco: var(--font-drdeco);
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -138,6 +153,9 @@ body {
     transform: translateX(-50%);
   }
 }
+
+/* Hero gallery marquee keyframes are injected by HeroGallery component
+   to bypass Turbopack CSS build cache (_hero-marquee-ltr). */
 
 .testimonials-section .name {
   font-family: var(--font-cormorant);
