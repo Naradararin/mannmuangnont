@@ -218,10 +218,10 @@ function DraggableMarquee({
 }
 
 // ── Mobile full-width marquee ────────────────────────────────────────────────
-// Clean, simple mobile treatment: each image is full viewport width at full
-// screen height (100dvh, falling back to 100vh), flowing horizontally
-// (auto-scroll right, seamless loop) with swipe + inertia.
-// No zigzag, no captions, no zoom.
+// Clean, simple mobile treatment: each image is full viewport width in a fixed
+// 3:4 portrait frame (matching the photos' natural ratio, so the whole image is
+// visible — no bottom crop, no squish), flowing horizontally (auto-scroll right,
+// seamless loop) with swipe + inertia. No zigzag, no captions, no zoom.
 function MobileHeroMarquee({
   cards, lang, noMotion,
 }: {
@@ -262,11 +262,13 @@ function MobileHeroMarquee({
   return (
     <div
       ref={containerRef}
-      // Full-screen height on mobile: 100dvh (accounts for browser bars) via inline
-      // style, with h-screen (100vh) as the fallback when dvh is unsupported — the
-      // inline dvh declaration is dropped in those browsers, leaving the class.
-      className="relative w-full overflow-hidden h-screen"
-      style={{ height: '100dvh' }}
+      // Mobile hero sizing: a STATIC 3:4 portrait frame (matches the hero photos'
+      // natural ~3:4 ratio) so every image shows fully — no bottom crop, no squish.
+      // We deliberately do NOT use 100dvh/100vh here: a dynamic-viewport height
+      // resizes as the Android address bar shows/hides, and with object-fit:cover
+      // that rescale reads as a scroll-linked "zoom". A static aspect-ratio frame
+      // sits still and removes that effect entirely.
+      className="relative aspect-[3/4] w-full overflow-hidden"
     >
       <motion.div
         className="flex h-full select-none"
@@ -307,10 +309,12 @@ export function HeroGallery() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      // Height: desktop keeps a fixed 100svh canvas (its marquee/text are absolutely
+      // positioned and fill it). Mobile intentionally has NO fixed height — it sizes
+      // to its content (header + full 3:4 image) so the image is never clipped by the
+      // viewport on short devices.
+      className="relative overflow-hidden lg:h-[100svh] lg:min-h-[640px]"
       style={{
-        height: '100svh',
-        minHeight: 640,
         background: 'linear-gradient(150deg, #FAF9F6 0%, #F4F1EA 45%, #E6DAC8 100%)',
       }}
       aria-label={lang === 'th' ? 'ส่วนแนะนำหลัก' : 'Hero section'}
@@ -386,7 +390,7 @@ export function HeroGallery() {
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-28 bg-gradient-to-l from-[#F4F1EA]/60 to-transparent lg:block" />
 
       {/* ── MOBILE (< lg) ─────────────────────── */}
-      <div className="flex h-full flex-col pt-[72px] lg:hidden">
+      <div className="flex flex-col pt-[72px] pb-8 lg:hidden">
 
         {/* Mobile text header */}
         <div className="shrink-0 px-5 pt-3 pb-4">
