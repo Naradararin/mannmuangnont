@@ -6,6 +6,10 @@ import Link from 'next/link'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useLang } from '@/lib/lang'
 import { Navbar } from '@/components/layout/navbar'
+import { Lightbox } from '@/components/ui/lightbox'
+import { PORTFOLIO } from '@/lib/portfolio-data'
+
+const PROJECT = PORTFOLIO.find(e => e.detailHref === '/portfolio/thep-rak-49')
 
 const L = {
   bg: '#0d0a05',
@@ -105,11 +109,13 @@ function CategoryCard({
   lang,
   noMotion,
   priority = false,
+  onOpen,
 }: {
   category: CategoryDef
   lang: 'th' | 'en'
   noMotion: boolean
   priority?: boolean
+  onOpen: (startIdx: number) => void
 }) {
   const [idx, setIdx] = useState(0)
   const { images, folder, label } = category
@@ -125,8 +131,16 @@ function CategoryCard({
       className="overflow-hidden rounded-sm"
       style={{ background: L.card, border: `1px solid ${L.border}` }}
     >
-      {/* ── Cover ───────────────────────────────────────────────── */}
-      <div className="relative aspect-[4/3] overflow-hidden" style={{ background: L.slot }}>
+      {/* ── Cover (click to open full-screen lightbox) ──────────── */}
+      <div
+        className="relative aspect-[4/3] cursor-zoom-in overflow-hidden"
+        style={{ background: L.slot }}
+        onClick={() => onOpen(idx)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(idx) } }}
+        aria-label={lang === 'th' ? `ดูรูป ${label.th} แบบเต็มจอ` : `View ${label.en} full screen`}
+      >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeSrc}
@@ -164,7 +178,7 @@ function CategoryCard({
         {/* Prev arrow */}
         {total > 1 && (
           <button
-            onClick={prev}
+            onClick={e => { e.stopPropagation(); prev() }}
             className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
             style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
             aria-label="Previous image"
@@ -178,7 +192,7 @@ function CategoryCard({
         {/* Next arrow */}
         {total > 1 && (
           <button
-            onClick={next}
+            onClick={e => { e.stopPropagation(); next() }}
             className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
             style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
             aria-label="Next image"
@@ -254,6 +268,8 @@ function CategoryCard({
 export default function ThepRak49Page() {
   const { lang } = useLang()
   const noMotion = useReducedMotion() ?? false
+  // Active lightbox: resolved image URLs for one category + which to show first.
+  const [lightbox, setLightbox] = useState<{ images: string[]; start: number; label: string } | null>(null)
 
   return (
     <>
@@ -304,6 +320,14 @@ export default function ThepRak49Page() {
                 ? 'โครงการ Luxury · กรุงเทพมหานคร'
                 : 'Luxury Flagship Project · Bangkok'}
             </p>
+            {lang === 'th' && PROJECT && (
+              <p
+                className="mt-4 max-w-2xl font-sarabun text-[15px] leading-[1.8]"
+                style={{ color: L.text }}
+              >
+                {PROJECT.description}
+              </p>
+            )}
           </div>
         </header>
 
@@ -317,6 +341,13 @@ export default function ThepRak49Page() {
                 lang={lang}
                 noMotion={noMotion}
                 priority={i === 0}
+                onOpen={start =>
+                  setLightbox({
+                    images: cat.images.map(f => imgSrc(cat.folder, f)),
+                    start,
+                    label: cat.label[lang],
+                  })
+                }
               />
             ))}
           </div>
@@ -344,6 +375,15 @@ export default function ThepRak49Page() {
           </Link>
         </footer>
       </div>
+
+      {lightbox && (
+        <Lightbox
+          images={lightbox.images}
+          initialIndex={lightbox.start}
+          label={lightbox.label}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </>
   )
 }

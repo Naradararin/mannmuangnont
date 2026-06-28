@@ -35,7 +35,7 @@ export function WhyUs() {
       aria-label={lang === 'th' ? 'ทำไมต้องเลือกเรา' : 'Why choose us'}
       className="bg-surface"
     >
-      <div className="mx-auto max-w-[1280px] px-6 py-[72px] md:px-10 md:py-[120px]">
+      <div className="mx-auto max-w-[1280px] px-6 pt-[72px] pb-[40px] md:px-10 md:py-[120px]">
         <FadeIn>
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">
             {c.eyebrow}

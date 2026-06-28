@@ -24,9 +24,19 @@ export interface PortfolioEntry {
   featuredOrder?: number
   isPlaceholder?: boolean
   detailHref?: string
+  /**
+   * Marks `location` as a descriptive phrase (a building/work description)
+   * rather than a named place, so the generated description restructures the
+   * sentence instead of forcing an awkward "...ที่<description>".
+   */
+  locationKind?: 'descriptor'
+  /** Auto-generated Thai summary built only from the fields above. */
+  description: string
 }
 
-export const PORTFOLIO: PortfolioEntry[] = [
+type PortfolioSeed = Omit<PortfolioEntry, 'description'>
+
+const PORTFOLIO_RAW: PortfolioSeed[] = [
   // ===== ทั่วไป (16 entries) =====
   {
     id: 'casa-ville-ratchaphruek-2026-06',
@@ -59,6 +69,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     date: '2026-06-05',
     province: { th: 'นนทบุรี', en: 'Nonthaburi' },
     location: { th: 'งานปูพื้นลายไม้', en: 'Wood Grain Flooring' },
+    locationKind: 'descriptor',
     sourceLink: 'https://www.facebook.com/share/p/1HjiUKoEoN/',
     mainCategories: [{ th: 'กระเบื้องยาง', en: 'Vinyl Flooring' }],
     curtainTypes: [],
@@ -172,6 +183,7 @@ export const PORTFOLIO: PortfolioEntry[] = [
     date: '2026-01-31',
     province: { th: 'ปทุมธานี', en: 'Pathum Thani' },
     location: { th: 'อาคารพาณิชย์ ติดแม่น้ำเจ้าพระยา', en: 'Commercial Building by the Chao Phraya River' },
+    locationKind: 'descriptor',
     sourceLink: 'https://www.facebook.com/share/p/18Y8unQsHa/',
     mainCategories: [{ th: 'ผ้าม่าน', en: 'Curtains' }],
     curtainTypes: [{ th: 'ลอน', en: 'Ripple-Fold' }, { th: 'พับ', en: 'Fold-Panel' }],
@@ -758,6 +770,117 @@ export const PORTFOLIO: PortfolioEntry[] = [
     detailHref: '/portfolio/thep-rak-49',
   },
 ]
+
+// ---------------------------------------------------------------------------
+// Auto-generated descriptions
+//
+// Pure, reproducible: builds a natural Thai sentence ONLY from existing field
+// values (project type, curtain type, light-blocking level, location, residence
+// type, province). It never invents claims and never writes "ไม่มีข้อมูล" — any
+// field equal to '-' or empty is simply skipped.
+// ---------------------------------------------------------------------------
+
+// Joins Thai items with spaces, placing "และ" before the final item.
+function joinThai(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? ''
+  return `${items.slice(0, -1).join(' ')} และ${items[items.length - 1]}`
+}
+
+// Bangkok is not administratively a จังหวัด, so use the colloquial short form.
+function provincePhrase(province: string): string {
+  return province === 'กรุงเทพ' ? 'กรุงเทพฯ' : `จังหวัด${province}`
+}
+
+export function buildDescription(e: PortfolioSeed): string {
+  const cats = e.mainCategories.map(c => c.th)
+  const curtains = e.curtainTypes.map(t => t.th)
+
+  // Project type(s) + curtain types. With a single category the curtain types
+  // attach directly (ผ้าม่านลอน ตาไก่ …); with multiple categories they're
+  // parenthesised so they bind only to the curtain category.
+  let catPart: string
+  if (cats.length > 1) {
+    const primary = curtains.length ? `${cats[0]} (${joinThai(curtains)})` : cats[0]
+    catPart = joinThai([primary, ...cats.slice(1)])
+  } else {
+    catPart = curtains.length ? `${cats[0]}${joinThai(curtains)}` : cats[0]
+  }
+
+  let s = `ผลงานติดตั้ง${catPart}`
+
+  if (e.lightBlocking !== '-') {
+    s += ` ระดับกันแสง ${e.lightBlocking}`
+  }
+
+  const province = provincePhrase(e.province.th)
+  const loc = e.location.th
+  const property = e.propertyType.th
+  // Thai joins to the next token without a space, but a Latin-script location
+  // reads better with one (e.g. "ที่ Chiang Rak Noi" rather than "ที่Chiang…").
+  const locSpaced = (/^[A-Za-z]/.test(loc) ? ' ' : '') + loc
+
+  if (e.locationKind === 'descriptor') {
+    // location already describes the building/work, so it fills the slot a
+    // residence type would normally occupy. A "งาน…" phrase reads naturally on
+    // its own; other descriptors take "สำหรับ".
+    s += loc.startsWith('งาน')
+      ? ` ${loc} ${province}`
+      : ` สำหรับ${locSpaced} ${province}`
+  } else if (property !== '-') {
+    s += ` สำหรับ${property}ที่${locSpaced} ${province}`
+  } else {
+    s += ` ที่${locSpaced} ${province}`
+  }
+
+  return s
+}
+
+export const PORTFOLIO: PortfolioEntry[] = PORTFOLIO_RAW.map(e => ({
+  ...e,
+  description: buildDescription(e),
+}))
+
+// Where a card should link. Entries with a bespoke page point at their own
+// route via `detailHref`; everything else uses the generic `/portfolio/[id]`
+// template (see app/portfolio/[id]/page.tsx + generateStaticParams).
+export function detailPath(e: PortfolioEntry): string {
+  return e.detailHref ?? `/portfolio/${e.id}`
+}
+
+// ---------------------------------------------------------------------------
+// Recommended projects ("แนะนำ")
+//
+// Returns up to `count` projects to show at the bottom of a detail page:
+//   1. the most-recent OTHER projects in the SAME tier as `current`, then
+//   2. if fewer than `count`, backfill with the most-recent projects from
+//      other tiers.
+// `current` itself is always excluded. Ordering is deterministic: newest date
+// first, then a featured project, then id as a final stable tiebreaker.
+// ---------------------------------------------------------------------------
+function byRecency(a: PortfolioEntry, b: PortfolioEntry): number {
+  if (a.date !== b.date) return a.date < b.date ? 1 : -1
+  const fa = a.featuredOrder ?? Infinity
+  const fb = b.featuredOrder ?? Infinity
+  if (fa !== fb) return fa - fb
+  return a.id < b.id ? -1 : 1
+}
+
+export function getRecommended(current: PortfolioEntry, count = 3): PortfolioEntry[] {
+  const others = PORTFOLIO.filter(e => e.id !== current.id)
+  const sameTier = others.filter(e => e.tier === current.tier).sort(byRecency)
+  const picks = sameTier.slice(0, count)
+
+  if (picks.length < count) {
+    const chosen = new Set(picks.map(e => e.id))
+    const fillers = others
+      .filter(e => !chosen.has(e.id))
+      .sort(byRecency)
+      .slice(0, count - picks.length)
+    picks.push(...fillers)
+  }
+
+  return picks
+}
 
 export function countByTier() {
   const counts: Record<Tier, number> = { 'ทั่วไป': 0, 'High-End': 0, 'Luxury': 0 }

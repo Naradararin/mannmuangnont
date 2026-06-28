@@ -1,22 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Phone } from 'lucide-react'
 import { SiLine, SiFacebook } from 'react-icons/si'
 import { useLang } from '@/lib/lang'
 
 const LINKS = {
   th: [
-    { label: 'สินค้า', href: '#collections' },
     { label: 'เกี่ยวกับเรา', href: '#about' },
+    { label: 'สินค้า', href: '#collections' },
     { label: 'ผลงาน', href: '#portfolio' },
     { label: 'รีวิว', href: '#testimonials' },
     { label: 'ติดต่อ', href: '#contact' },
   ],
   en: [
-    { label: 'Products', href: '#collections' },
     { label: 'About', href: '#about' },
+    { label: 'Products', href: '#collections' },
     { label: 'Portfolio', href: '#portfolio' },
     { label: 'Reviews', href: '#testimonials' },
     { label: 'Contact', href: '#contact' },
@@ -28,9 +27,12 @@ const CTA = {
   en: 'Contact Us',
 }
 
+const SECTION_IDS = ['collections', 'about', 'portfolio', 'testimonials', 'contact']
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [activeId, setActiveId] = useState<string | null>(null)
   const { lang, toggle } = useLang()
   const links = LINKS[lang]
 
@@ -41,6 +43,27 @@ export function Navbar() {
     onScroll()
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => el !== null,
+    )
+    if (sections.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+        if (visible[0]) setActiveId(visible[0].target.id)
+      },
+      // Bias the trigger line toward the upper-middle of the viewport so the
+      // active link updates as a section reaches the top under the navbar.
+      { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
+    )
+    sections.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -57,24 +80,36 @@ export function Navbar() {
           <img
             src="/images/brand/logo.png"
             alt="ม่านเมืองนนท์"
-            className="h-9 w-auto object-contain"
+            className="h-11 w-auto object-contain md:h-14"
           />
-          <span className="font-sov-wong hidden text-xl text-ink sm:block">
+          <span className="font-sov-wong whitespace-nowrap text-xl text-ink sm:text-2xl">
             {lang === 'th' ? 'ม่านเมืองนนท์' : 'Maan Mueang Nont'}
           </span>
         </a>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="font-dm-sans text-[13px] tracking-[0.08em] text-ink/75 transition-colors hover:text-sage"
-            >
-              {link.label}
-            </a>
-          ))}
+          {links.map((link) => {
+            const active = link.href === `#${activeId}`
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                aria-current={active ? 'true' : undefined}
+                className={`group relative font-dm-sans text-[13px] tracking-[0.08em] transition-colors hover:text-sage ${
+                  active ? 'text-sage' : 'text-ink/75'
+                }`}
+              >
+                {link.label}
+                <span
+                  aria-hidden
+                  className={`pointer-events-none absolute -bottom-1.5 left-0 h-px w-full origin-left bg-sage transition-transform duration-300 ease-out group-hover:scale-x-100 ${
+                    active ? 'scale-x-100' : 'scale-x-0'
+                  }`}
+                />
+              </a>
+            )
+          })}
         </nav>
 
         {/* Desktop right: lang toggle + contact icons + CTA */}
@@ -144,27 +179,39 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
-            className="overflow-hidden border-t border-sand/30 bg-canvas md:hidden"
-          >
-            <nav className="flex flex-col gap-1 px-6 py-4">
-              {links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="flex h-11 items-center font-dm-sans text-[13px] tracking-[0.08em] text-ink/80"
-                >
-                  {link.label}
-                </a>
-              ))}
+      {/* Mobile menu — plainly conditionally mounted (no animated reveal).
+          It previously used framer-motion's AnimatePresence + a height:0→'auto'
+          animation, which never ran in this Next 16 / React 19 stack: the panel
+          stayed stuck at its `initial` collapsed state (height ~1px, opacity 0),
+          so its links were invisible and taps fell straight through to the hero
+          image behind. Rendering a plain block when `open` can't get stuck — the
+          panel sits at natural height in the z-50 header, so the anchor scroll +
+          onClick close both work. */}
+      {open && (
+        <div className="border-t border-sand/30 bg-canvas md:hidden">
+          <nav className="flex flex-col gap-1 px-6 py-4">
+              {links.map((link) => {
+                const active = link.href === `#${activeId}`
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    aria-current={active ? 'true' : undefined}
+                    onClick={() => setOpen(false)}
+                    className={`flex h-11 items-center gap-2.5 font-dm-sans text-[13px] tracking-[0.08em] transition-colors ${
+                      active ? 'text-sage' : 'text-ink/80'
+                    }`}
+                  >
+                    <span
+                      aria-hidden
+                      className={`h-3.5 w-px bg-sage transition-opacity ${
+                        active ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                    {link.label}
+                  </a>
+                )
+              })}
               <div className="mt-1 flex items-center gap-5 px-1">
                 <a
                   href="tel:0922294692"
@@ -199,10 +246,9 @@ export function Navbar() {
               >
                 {CTA[lang]}
               </a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </nav>
+        </div>
+      )}
     </header>
   )
 }

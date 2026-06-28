@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { ChevronRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import {
   AnimatePresence,
@@ -36,13 +37,40 @@ const COPY = {
   },
 }
 
+// ── Subtle swipe hint ────────────────────────────────────────────────────────
+// An icon-only right chevron that gently nudges sideways to signal the hero
+// gallery is horizontally swipeable/draggable. Transform-only animation (reliable
+// in this stack) and stilled under reduced-motion. `tone` adapts to the backdrop:
+// 'light' for the cream desktop bg, 'dark' (with a soft shadow for legibility over
+// bright photos) for mobile. Positioning is owned by the caller's wrapper so the
+// motion transform here never fights a layout translate.
+function SwipeHint({
+  noMotion, tone,
+}: {
+  noMotion: boolean
+  tone: 'light' | 'dark'
+}) {
+  const color = tone === 'dark' ? 'text-canvas/85' : 'text-ink/40'
+  const shadow = tone === 'dark' ? 'drop-shadow-[0_1px_6px_rgba(20,18,15,0.55)]' : ''
+  return (
+    <motion.span
+      aria-hidden
+      className={`flex ${color} ${shadow}`}
+      animate={noMotion ? undefined : { x: [0, 5, 0] }}
+      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <ChevronRight size={tone === 'dark' ? 28 : 16} strokeWidth={1.75} />
+    </motion.span>
+  )
+}
+
 // Layout constants
 const CARD_W   = 280  // desktop card width (px)
 const CARD_H   = 70   // desktop card height (svh) — uniform
 const ZIGZAG   = 14   // desktop stagger: even-index=0svh, odd-index=14svh
 const GAP      = 16   // marginRight per card (px)
 const DUR_DESKTOP = 55 // seconds for one full set to pass (auto-scroll speed)
-const DUR_MOBILE  = 30 // seconds for one full set of full-width images to pass
+const MOBILE_PEEK = 40 // px of the next hero image left visible on the right edge
 
 // Keep x within one set width so the duplicated track loops seamlessly.
 const wrapVal = (min: number, max: number, v: number) => {
@@ -217,86 +245,173 @@ function DraggableMarquee({
   )
 }
 
-// ── Mobile full-width marquee ────────────────────────────────────────────────
-// Clean, simple mobile treatment: each image is full viewport width in a fixed
-// 3:4 portrait frame (matching the photos' natural ratio, so the whole image is
-// visible — no bottom crop, no squish), flowing horizontally (auto-scroll right,
-// seamless loop) with swipe + inertia. No zigzag, no captions, no zoom.
-function MobileHeroMarquee({
+// ── Mobile hero (full-screen, overlaid text, swipeable) ──────────────────────
+// Mobile treatment (< lg): a full-screen vertical hero. The brand text + contact
+// button sit overlaid on the lower-left over a warm scrim; the photo behind it is
+// a horizontal scroll-snap carousel where the next image peeks from the right edge
+// to signal swipeability. Native swipe (momentum) + a gentle auto-advance that
+// pauses after the user interacts and is disabled under reduced-motion.
+//
+// Height comes from the section (max-lg:h-[100svh]). We use svh, NOT dvh/vh: a
+// dynamic-viewport height resizes as the Android address bar shows/hides, and with
+// object-fit:cover that rescale reads as a scroll-linked "zoom". svh stays put.
+function MobileHero({
   cards, lang, noMotion,
 }: {
   cards: CardDef[]
   lang: 'th' | 'en'
   noMotion: boolean
 }) {
-  const x = useMotionValue(0)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const setWidth = useRef(0)          // one set width in px (cards.length × viewport width)
-  const dragging = useRef(false)
-  const momentum = useRef(0)
+  const copy = COPY[lang]
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
 
-  // Measure one set width from the live container so the loop stays seamless on resize.
+  // step = the snap distance between slides (slide width). Slides are PEEK px
+  // narrower than the viewport so the next image peeks on the right.
+  const stepOf = (el: HTMLDivElement) => el.clientWidth - MOBILE_PEEK
+
+  const onScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    setActive(Math.round(el.scrollLeft / stepOf(el)))
+  }
+
+  const goTo = (i: number) => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTo({ left: stepOf(el) * i, behavior: 'smooth' })
+  }
+
+  // Gentle auto-advance; pause for a few seconds whenever the user interacts.
   useEffect(() => {
-    const measure = () => {
-      const w = containerRef.current?.clientWidth ?? window.innerWidth
-      setWidth.current = cards.length * w
+    if (noMotion) return
+    const el = scrollRef.current
+    if (!el) return
+    let paused = false
+    let resume: ReturnType<typeof setTimeout>
+    const pause = () => {
+      paused = true
+      clearTimeout(resume)
+      resume = setTimeout(() => { paused = false }, 6000)
     }
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [cards.length])
+    el.addEventListener('pointerdown', pause)
+    el.addEventListener('touchstart', pause, { passive: true })
+    el.addEventListener('wheel', pause, { passive: true })
 
-  useAnimationFrame((_, delta) => {
-    if (dragging.current) return
-    const sw = setWidth.current
-    if (!sw) return
-    const dt = Math.min(delta, 64) / 1000
-    const auto = noMotion ? 0 : sw / DUR_MOBILE   // px/s — scroll right, same as desktop
-    let m = momentum.current
-    x.set(wrapVal(-sw, 0, x.get() + (auto + m) * dt))
-    m *= Math.pow(0.94, delta / 16.67)
-    if (Math.abs(m) < 2) m = 0
-    momentum.current = m
-  })
+    const id = setInterval(() => {
+      if (paused) return
+      const step = stepOf(el)
+      const maxLeft = step * (cards.length - 1)
+      const next = el.scrollLeft + step
+      el.scrollTo({ left: next > maxLeft + 4 ? 0 : next, behavior: 'smooth' })
+    }, 5000)
+
+    return () => {
+      clearInterval(id)
+      clearTimeout(resume)
+      el.removeEventListener('pointerdown', pause)
+      el.removeEventListener('touchstart', pause)
+      el.removeEventListener('wheel', pause)
+    }
+  }, [cards.length, noMotion])
 
   return (
-    <div
-      ref={containerRef}
-      // Mobile hero sizing: a STATIC 3:4 portrait frame (matches the hero photos'
-      // natural ~3:4 ratio) so every image shows fully — no bottom crop, no squish.
-      // We deliberately do NOT use 100dvh/100vh here: a dynamic-viewport height
-      // resizes as the Android address bar shows/hides, and with object-fit:cover
-      // that rescale reads as a scroll-linked "zoom". A static aspect-ratio frame
-      // sits still and removes that effect entirely.
-      className="relative aspect-[3/4] w-full overflow-hidden"
-    >
-      <motion.div
-        className="flex h-full select-none"
-        style={{ x, touchAction: 'pan-y', cursor: 'grab' }}
-        whileTap={{ cursor: 'grabbing' }}
-        onPanStart={() => { dragging.current = true; momentum.current = 0 }}
-        onPan={(_, info) => {
-          x.set(wrapVal(-setWidth.current, 0, x.get() + info.delta.x))
-        }}
-        onPanEnd={(_, info) => {
-          dragging.current = false
-          momentum.current = clamp(info.velocity.x, -2200, 2200)
-        }}
+    <div className="absolute inset-0 lg:hidden">
+      {/* Swipeable photo carousel (background). Native scroll-snap + momentum. */}
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className="absolute inset-0 flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {[...cards, ...cards].map((card, i) => (
-          <div key={i} className="relative h-full w-full shrink-0">
+        {cards.map((card, i) => (
+          <div
+            key={i}
+            className="relative h-full shrink-0 snap-start"
+            style={{ width: `calc(100% - ${MOBILE_PEEK}px)` }}
+          >
             <Image
               src={card.src}
               alt={card.alt[lang]}
               fill
-              sizes="100vw"
+              sizes="92vw"
               quality={85}
+              priority={i === 0}
               draggable={false}
               style={{ objectFit: 'cover', objectPosition: card.objectPosition }}
             />
           </div>
         ))}
-      </motion.div>
+      </div>
+
+      {/* Warm scrim — keeps photos bright up top, text legible at the bottom. */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(to top, rgba(20,18,15,0.74) 0%, rgba(20,18,15,0.40) 26%, rgba(20,18,15,0) 52%)',
+        }}
+      />
+
+      {/* Swipe hint — right edge, vertically centered. Sits over the next-image
+          peek and stays clear of the lower-left text/dots and the bottom-right
+          ContactFab, so nothing covers or clips it. */}
+      <div className="pointer-events-none absolute right-3 top-1/2 z-10 -translate-y-1/2">
+        <SwipeHint noMotion={noMotion} tone="dark" />
+      </div>
+
+      {/* Overlaid brand text + CTA (lower-left). Non-interactive areas let swipes
+          pass through to the carousel; only the buttons/dots capture taps. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-9">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={lang}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.35 }}
+          >
+            <p className="font-dm-sans text-[10px] uppercase tracking-[0.2em] text-canvas/70">
+              {copy.eyebrow}
+            </p>
+            <h1 className="font-sov-wong mt-2 text-[44px] leading-[1.04] text-canvas drop-shadow-[0_1px_12px_rgba(20,18,15,0.35)]">
+              {copy.brand}
+            </h1>
+            <p className="mt-2 font-sarabun text-[15px] font-light leading-[1.6] text-canvas/85">
+              {copy.tagline}
+            </p>
+            <div className="pointer-events-auto mt-5 flex items-center gap-4">
+              <a
+                href="#contact"
+                className="flex h-11 items-center rounded-full bg-canvas px-7 font-dm-sans text-[12px] tracking-[0.07em] text-ink shadow-[0_4px_20px_rgba(20,18,15,0.25)] transition-colors active:bg-canvas/90"
+              >
+                {copy.cta1}
+              </a>
+              <a
+                href="#portfolio"
+                className="font-dm-sans text-[12px] tracking-[0.07em] text-canvas/80 underline decoration-canvas/30 underline-offset-4"
+              >
+                {copy.cta2}
+              </a>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Page dots — indicate multiple swipeable images. */}
+        <div className="pointer-events-auto mt-6 flex gap-2">
+          {cards.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={lang === 'th' ? `ไปที่ภาพที่ ${i + 1}` : `Go to image ${i + 1}`}
+              className="h-1.5 rounded-full transition-all duration-300"
+              style={{
+                width: i === active ? 20 : 6,
+                backgroundColor: i === active ? 'rgba(250,249,246,0.95)' : 'rgba(250,249,246,0.45)',
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
@@ -313,7 +428,7 @@ export function HeroGallery() {
       // positioned and fill it). Mobile intentionally has NO fixed height — it sizes
       // to its content (header + full 3:4 image) so the image is never clipped by the
       // viewport on short devices.
-      className="relative overflow-hidden lg:h-[100svh] lg:min-h-[640px]"
+      className="relative overflow-hidden max-lg:h-[100svh] lg:h-[100svh] lg:min-h-[640px]"
       style={{
         background: 'linear-gradient(150deg, #FAF9F6 0%, #F4F1EA 45%, #E6DAC8 100%)',
       }}
@@ -389,52 +504,14 @@ export function HeroGallery() {
       {/* Right-edge vignette */}
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-28 bg-gradient-to-l from-[#F4F1EA]/60 to-transparent lg:block" />
 
-      {/* ── MOBILE (< lg) ─────────────────────── */}
-      <div className="flex flex-col pt-[72px] pb-8 lg:hidden">
-
-        {/* Mobile text header */}
-        <div className="shrink-0 px-5 pt-3 pb-4">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={lang}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.35 }}
-            >
-              <p className="font-dm-sans text-[10px] uppercase tracking-[0.2em] text-sage">
-                {copy.eyebrow}
-              </p>
-              <h1 className="font-sov-wong mt-2 text-[40px] leading-[1.05] text-ink">
-                {copy.brand}
-              </h1>
-              <p className="mt-2 font-sarabun text-[15px] font-light text-ink/55">
-                {copy.tagline}
-              </p>
-              <div className="mt-4 flex items-center gap-4">
-                <a
-                  href="#contact"
-                  className="flex h-9 items-center rounded-full border border-ink/30 px-5 font-dm-sans text-[11px] tracking-[0.07em] text-ink"
-                >
-                  {copy.cta1}
-                </a>
-                <a
-                  href="#portfolio"
-                  className="font-dm-sans text-[11px] tracking-[0.07em] text-ink/45 underline decoration-transparent underline-offset-4"
-                >
-                  {copy.cta2}
-                </a>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Mobile marquee strip — simple full-width images flowing horizontally */}
-        <div className="flex flex-1 items-center" aria-hidden="true">
-          <MobileHeroMarquee cards={CARDS} lang={lang} noMotion={noMotion} />
-        </div>
-
+      {/* Desktop swipe hint — signals the gallery strip is draggable. Bottom-left,
+          aligned with the text column, to avoid the bottom-right ContactFab. */}
+      <div className="pointer-events-none absolute bottom-8 left-10 z-20 hidden lg:block">
+        <SwipeHint noMotion={noMotion} tone="light" />
       </div>
+
+      {/* ── MOBILE (< lg) ─────────────────────── */}
+      <MobileHero cards={CARDS} lang={lang} noMotion={noMotion} />
 
     </section>
   )

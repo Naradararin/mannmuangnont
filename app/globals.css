@@ -137,23 +137,6 @@ body {
   }
 }
 
-.marquee-track {
-  animation: marquee 20s linear infinite;
-}
-
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 /* Hero gallery marquee keyframes are injected by HeroGallery component
    to bypass Turbopack CSS build cache (_hero-marquee-ltr). */
 

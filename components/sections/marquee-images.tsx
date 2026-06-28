@@ -1,4 +1,13 @@
+'use client'
+
 import Image from 'next/image'
+import { useEffect, useRef } from 'react'
+import {
+  motion,
+  useReducedMotion,
+  useMotionValue,
+  useAnimationFrame,
+} from 'framer-motion'
 
 const IMAGES = [
   {
@@ -55,7 +64,53 @@ const IMAGES = [
 // Duplicate for seamless infinite loop
 const TRACK = [...IMAGES, ...IMAGES]
 
+// Seconds for one full set to pass — matches the previous CSS animationDuration.
+const DURATION = 38
+
+// Keep x within one set width so the duplicated track loops seamlessly.
+const wrapVal = (min: number, max: number, v: number) => {
+  const range = max - min
+  return ((((v - min) % range) + range) % range) + min
+}
+const clamp = (v: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, v))
+
 export function MarqueeImages() {
+  const noMotion = useReducedMotion() ?? false
+  const x = useMotionValue(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const setWidth = useRef(0) // width of ONE image set in px
+  const dragging = useRef(false)
+  const hovering = useRef(false)
+  const momentum = useRef(0) // px/s carried from a release
+
+  // Measure one set width from the live track (handles responsive sizes/resize).
+  // The track holds two sets, so half its scroll width is one set.
+  useEffect(() => {
+    const measure = () => {
+      const full = trackRef.current?.scrollWidth ?? 0
+      setWidth.current = full / 2
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
+  useAnimationFrame((_, delta) => {
+    if (dragging.current) return // manual control owns position
+    const sw = setWidth.current
+    if (!sw) return
+    const dt = Math.min(delta, 64) / 1000 // clamp to avoid jumps after tab refocus
+    // Auto-scroll leftward (negative), matching the original CSS marquee direction.
+    const auto = noMotion || hovering.current ? 0 : -(sw / DURATION)
+    let m = momentum.current
+    x.set(wrapVal(-sw, 0, x.get() + (auto + m) * dt))
+    // frame-rate-independent friction (~0.94 per 60fps frame)
+    m *= Math.pow(0.94, delta / 16.67)
+    if (Math.abs(m) < 2) m = 0
+    momentum.current = m
+  })
+
   return (
     <div className="overflow-hidden border-y border-sand/25 bg-canvas py-3">
       <div
@@ -66,9 +121,28 @@ export function MarqueeImages() {
             'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
         }}
       >
-        <div
-          className="marquee-track flex w-max gap-3"
-          style={{ animationDuration: '38s' }}
+        <motion.div
+          ref={trackRef}
+          className="flex w-max select-none gap-3"
+          style={{ x, touchAction: 'pan-y', cursor: 'grab' }}
+          whileTap={{ cursor: 'grabbing' }}
+          onPanStart={() => {
+            dragging.current = true
+            momentum.current = 0
+          }}
+          onPan={(_, info) => {
+            x.set(wrapVal(-setWidth.current, 0, x.get() + info.delta.x))
+          }}
+          onPanEnd={(_, info) => {
+            dragging.current = false
+            momentum.current = clamp(info.velocity.x, -2200, 2200)
+          }}
+          onHoverStart={() => {
+            hovering.current = true
+          }}
+          onHoverEnd={() => {
+            hovering.current = false
+          }}
         >
           {TRACK.map((img, i) => (
             <div
@@ -80,11 +154,12 @@ export function MarqueeImages() {
                 alt={img.alt}
                 fill
                 sizes="280px"
+                draggable={false}
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
               />
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   )

@@ -1,11 +1,11 @@
 'use client'
 
-import { useRef, useMemo, useState } from 'react'
+import { useRef, useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
-import { PORTFOLIO, Tier, PortfolioEntry } from '@/lib/portfolio-data'
+import { PORTFOLIO, Tier, PortfolioEntry, detailPath } from '@/lib/portfolio-data'
 
 const TIER_ORDER: Tier[] = ['ทั่วไป', 'High-End', 'Luxury']
 // Canonical Thai keys used for filter state; order controls pill order
@@ -35,6 +35,15 @@ const L = {
   strip: 'rgba(201,168,76,0.06)',
 } as const
 
+// High-End design tokens
+const HE = {
+  bg: '#FAF4E5',                  // section background (cream)
+  card: '#F6F5EC',               // card background
+  accent: '#C7C3B0',             // active tab + headings (sage)
+  text: '#664E44',               // primary text (cocoa)
+  muted: 'rgba(102,78,68,0.55)', // derived: cocoa at low opacity for secondary text
+} as const
+
 const PILL = 'rounded-full px-4 py-1.5 font-dm-sans text-[11px] tracking-[0.08em] transition-colors cursor-pointer border'
 
 export function PortfolioGallery() {
@@ -43,6 +52,34 @@ export function PortfolioGallery() {
   const [cat, setCat] = useState<string | null>(null)   // Thai key
   const [tag, setTag] = useState<string | null>(null)   // Thai key
   const isLux = tier === 'Luxury'
+  const isHE = tier === 'High-End'
+
+  // Deep-link support: a hash like `#portfolio?cat=ผ้าม่าน` (e.g. from the
+  // Collections cards) pre-applies a category filter. Because a category is
+  // scoped to a tier and not every tier has every category, we also switch to
+  // the first tier (in display order) that actually contains it — so e.g.
+  // วอลเปเปอร์ lands on High-End rather than the empty ทั่วไป default.
+  useEffect(() => {
+    function applyHash() {
+      const hash = window.location.hash
+      if (!hash.startsWith('#portfolio')) return
+      const q = hash.indexOf('?')
+      if (q === -1) return
+      const catKey = new URLSearchParams(hash.slice(q + 1)).get('cat')
+      if (!catKey || !CAT_ORDER.includes(catKey)) return
+      const targetTier = TIER_ORDER.find(t =>
+        PORTFOLIO.some(e => e.tier === t && e.mainCategories.some(c => c.th === catKey)),
+      )
+      if (!targetTier) return
+      setTier(targetTier)
+      setCat(catKey)
+      setTag(null)
+      document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
 
   const tierEntries = useMemo(() => PORTFOLIO.filter(e => e.tier === tier), [tier])
 
@@ -97,12 +134,19 @@ export function PortfolioGallery() {
     if (active) {
       if (isLuxTab) return `${PILL} bg-[#c9a84c] text-[#0d0a05] border-transparent font-medium`
       if (isLux) return `${PILL} bg-[rgba(201,168,76,0.15)] text-[#e8d5a3] border-[rgba(201,168,76,0.3)]`
+      if (isHE) return `${PILL} bg-[#C7C3B0] text-[#664E44] border-transparent`
       return `${PILL} bg-ink text-canvas border-transparent`
     }
     if (isLux) {
       return isLuxTab
         ? `${PILL} border-[rgba(201,168,76,0.28)] text-[rgba(201,168,76,0.55)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.5)]`
         : `${PILL} border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.45)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.4)]`
+    }
+    if (isHE) {
+      // Keep the Luxury tab's gold styling; cocoa-tint the others
+      return isLuxTab
+        ? `${PILL} border-ink/10 text-[#a07830]/70 hover:text-[#c9a84c] hover:border-[rgba(192,160,80,0.4)]`
+        : `${PILL} border-[rgba(102,78,68,0.2)] text-[rgba(102,78,68,0.55)] hover:text-[#664E44] hover:border-[rgba(102,78,68,0.4)]`
     }
     return isLuxTab
       ? `${PILL} border-ink/10 text-[#a07830]/70 hover:text-[#c9a84c] hover:border-[rgba(192,160,80,0.4)]`
@@ -117,6 +161,11 @@ export function PortfolioGallery() {
         ? `${PILL} bg-[#c9a84c] text-[#0d0a05] border-transparent`
         : `${PILL} border-[rgba(201,168,76,0.22)] text-[rgba(201,168,76,0.52)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.44)]`
     }
+    if (isHE) {
+      return active
+        ? `${PILL} bg-[#C7C3B0] text-[#664E44] border-transparent`
+        : `${PILL} border-[rgba(102,78,68,0.2)] text-[rgba(102,78,68,0.55)] hover:text-[#664E44] hover:border-[rgba(102,78,68,0.4)]`
+    }
     return active
       ? `${PILL} bg-sage text-canvas border-transparent`
       : `${PILL} border-ink/20 text-ink/55 hover:text-ink hover:border-ink/40`
@@ -130,6 +179,11 @@ export function PortfolioGallery() {
         ? `${PILL} border-[rgba(201,168,76,0.55)] text-[#c9a84c] bg-[rgba(201,168,76,0.08)]`
         : `${PILL} border-[rgba(201,168,76,0.15)] text-[rgba(201,168,76,0.4)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.35)]`
     }
+    if (isHE) {
+      return active
+        ? `${PILL} border-[#C7C3B0] text-[#664E44] bg-[rgba(199,195,176,0.22)]`
+        : `${PILL} border-[rgba(102,78,68,0.15)] text-[rgba(102,78,68,0.45)] hover:text-[#664E44] hover:border-[rgba(102,78,68,0.3)]`
+    }
     return active
       ? `${PILL} bg-surface text-ink border-transparent`
       : `${PILL} border-ink/15 text-ink/45 hover:text-ink/65 hover:border-ink/25`
@@ -139,15 +193,15 @@ export function PortfolioGallery() {
     <section
       id="portfolio"
       aria-label={lang === 'th' ? 'ผลงานของเรา' : 'Our portfolio'}
-      className="py-[72px] transition-colors duration-500 md:py-[120px]"
-      style={{ backgroundColor: isLux ? L.bg : 'var(--color-surface)' }}
+      className="pt-[40px] pb-[72px] transition-colors duration-500 md:py-[120px]"
+      style={{ backgroundColor: isLux ? L.bg : isHE ? HE.bg : 'var(--color-surface)' }}
     >
       <div className="mx-auto max-w-[1280px] px-6 md:px-10">
         {/* Header */}
         <FadeIn>
           <p
             className="font-dm-sans text-[11px] uppercase tracking-[0.2em]"
-            style={{ color: isLux ? L.gold : 'var(--color-sage)' }}
+            style={{ color: isLux ? L.gold : isHE ? HE.accent : 'var(--color-sage)' }}
           >
             Portfolio
           </p>
@@ -155,13 +209,13 @@ export function PortfolioGallery() {
             className={`mt-3 text-[32px] leading-[1.25] md:text-[40px] ${
               lang === 'th' ? 'font-ekkamai font-light tracking-wide' : 'font-cormorant italic'
             }`}
-            style={{ color: isLux ? L.champ : 'var(--color-ink)' }}
+            style={{ color: isLux ? L.champ : isHE ? HE.text : 'var(--color-ink)' }}
           >
             {lang === 'th' ? 'ผลงานของเรา' : 'Our Work'}
           </h2>
           <p
             className="mt-3 font-sarabun text-sm"
-            style={{ color: isLux ? L.muted : 'rgba(20,18,15,0.5)' }}
+            style={{ color: isLux ? L.muted : isHE ? HE.muted : 'rgba(20,18,15,0.5)' }}
           >
             {lang === 'th'
               ? 'คัดสรรผลงานที่บันทึกไว้ตลอด 3 ปีที่ผ่านมา'
@@ -225,7 +279,7 @@ export function PortfolioGallery() {
         {/* Count */}
         <p
           className="mt-5 font-dm-sans text-[11px]"
-          style={{ color: isLux ? L.muted : 'rgba(20,18,15,0.4)' }}
+          style={{ color: isLux ? L.muted : isHE ? HE.muted : 'rgba(20,18,15,0.4)' }}
         >
           {filtered.length} {lang === 'th' ? 'ผลงาน' : 'projects'}
           {filtered.some(e => e.isPlaceholder) && (
@@ -269,7 +323,14 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
   function next() { setMainIdx(i => (i + 1) % total) }
 
   return (
-    <div className="group overflow-hidden rounded-sm border border-surface bg-canvas transition-shadow hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-sm border border-surface bg-canvas transition-shadow hover:shadow-md">
+      {/* Stretched link covering the whole card. Sits above image/info (z-10)
+          but below the carousel controls (z-20) so those stay interactive. */}
+      <Link
+        href={detailPath(entry)}
+        aria-label={lang === 'th' ? `ดูโปรเจกต์ ${entry.location.th}` : `View project: ${entry.location.en}`}
+        className="absolute inset-0 z-10"
+      />
       {/* Main image */}
       <div
         className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface to-sage/15"
@@ -299,14 +360,14 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
           <>
             <button
               onClick={(e) => { e.stopPropagation(); prev() }}
-              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
+              className="absolute left-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
               aria-label="Previous photo"
             >
               ‹
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); next() }}
-              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
+              className="absolute right-2 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ink/50 text-xl leading-none text-canvas opacity-100 transition-opacity hover:bg-ink/75 sm:opacity-0 sm:group-hover:opacity-100"
               aria-label="Next photo"
             >
               ›
@@ -331,7 +392,7 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
       {/* Thumbnail strip */}
       {hasMultiple && (
         <div
-          className="flex gap-1 overflow-x-auto bg-surface/60 px-1.5 py-1.5"
+          className="relative z-20 flex gap-1 overflow-x-auto bg-surface/60 px-1.5 py-1.5"
           style={{ scrollbarWidth: 'none' }}
         >
           {entry.imageUrls.map((url, i) => (
@@ -358,6 +419,11 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
         <p className="mt-1 font-sarabun text-sm leading-[1.6] text-ink">
           {entry.location[lang]}
         </p>
+        {lang === 'th' && (
+          <p className="mt-1.5 font-sarabun text-[11px] leading-[1.7] text-ink/55">
+            {entry.description}
+          </p>
+        )}
         {entry.curtainTypes.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {entry.curtainTypes.map(t => (
@@ -385,7 +451,9 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
 
 function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' }) {
   const isProcessResult = entry.imageType === 'process-and-result'
-  const hasLink = !!entry.detailHref
+  // Every card now links to its detail page (bespoke route or generic template);
+  // the flag still drives the "View Project" hover affordance + arrow.
+  const hasLink = true
 
   const imageArea = isProcessResult ? (
     <>
@@ -477,6 +545,11 @@ function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' 
           <span className="mt-1 shrink-0 font-dm-sans text-[10px]" style={{ color: L.muted }}>→</span>
         )}
       </div>
+      {lang === 'th' && (
+        <p className="mt-2 font-sarabun text-[11px] leading-[1.7]" style={{ color: L.muted }}>
+          {entry.description}
+        </p>
+      )}
       {entry.mainCategories.length > 1 && (
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {entry.mainCategories.map(c => (
@@ -505,19 +578,10 @@ function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' 
   const cls = 'group overflow-hidden rounded-sm transition-shadow hover:shadow-[0_4px_32px_rgba(201,168,76,0.14)]'
   const sty = { background: L.card, border: `1px solid ${L.border}` }
 
-  if (hasLink) {
-    return (
-      <Link href={entry.detailHref!} className={cls} style={sty}>
-        {imageArea}
-        {infoArea}
-      </Link>
-    )
-  }
-
   return (
-    <div className={cls} style={sty}>
+    <Link href={detailPath(entry)} className={cls} style={sty}>
       {imageArea}
       {infoArea}
-    </div>
+    </Link>
   )
 }

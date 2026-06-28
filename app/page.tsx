@@ -17,8 +17,8 @@ export default function Home() {
       <main>
         <HeroGallery />
         <MarqueeImages />
-        <Collections />
         <About />
+        <Collections />
         <WhyUs />
         <PortfolioGallery />
         <Testimonials />
