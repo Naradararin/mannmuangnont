@@ -29,10 +29,10 @@ export const HERO_CARDS: CardDef[] = [
     objectPosition: 'center 30%',
   },
   {
-    src: '/images/hero/473176.jpg',
-    alt: { th: 'เทพรักษ์ 49', en: 'Thep Rak 49' },
-    label: { th: 'เทพรักษ์ 49', en: 'Thep Rak 49' },
-    sub: 'Bangkok · 2024',
+    src: '/images/hero/476156.jpg',
+    alt: { th: 'Atmoz Palacio', en: 'Atmoz Palacio' },
+    label: { th: 'Atmoz Palacio', en: 'Atmoz Palacio' },
+    sub: 'Bangkok · 2025',
     objectPosition: 'center center',
   },
   {
