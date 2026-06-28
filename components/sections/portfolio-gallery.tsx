@@ -365,7 +365,7 @@ function StandardCard({ entry, lang, recommended }: { entry: PortfolioEntry; lan
       )}
       {/* Main image */}
       <div
-        className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface to-sage/15"
+        className="img-skeleton relative aspect-[4/3] overflow-hidden"
         onTouchStart={hasMultiple ? (e) => { touchX.current = e.touches[0].clientX } : undefined}
         onTouchEnd={hasMultiple ? (e) => {
           if (touchX.current === null) return
@@ -493,7 +493,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
         {[0, 1].map(i => {
           const url = entry.processImageUrls?.[i] ?? ''
           return (
-            <div key={i} className="relative aspect-square overflow-hidden" style={{ background: L.slot }}>
+            <div key={i} className={`relative aspect-square overflow-hidden ${url ? 'img-skeleton-dark' : ''}`} style={url ? undefined : { background: L.slot }}>
               {url ? (
                 <Image src={url} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
               ) : (
@@ -507,7 +507,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
             </div>
           )
         })}
-        <div className="relative aspect-square overflow-hidden" style={{ background: L.slot }}>
+        <div className={`relative aspect-square overflow-hidden ${entry.imageUrls[0] ? 'img-skeleton-dark' : ''}`} style={entry.imageUrls[0] ? undefined : { background: L.slot }}>
           {entry.imageUrls[0] ? (
             <Image src={entry.imageUrls[0]} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
           ) : (
@@ -526,7 +526,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
       </div>
     </>
   ) : (
-    <div className="relative aspect-[4/3] overflow-hidden" style={{ background: L.slot }}>
+    <div className={`relative aspect-[4/3] overflow-hidden ${entry.imageUrls[0] ? 'img-skeleton-dark' : ''}`} style={entry.imageUrls[0] ? undefined : { background: L.slot }}>
       {entry.imageUrls[0] ? (
         <Image
           src={entry.imageUrls[0]}

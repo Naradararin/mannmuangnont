@@ -161,6 +161,40 @@ body {
   box-shadow: none;
 }
 
+/* ===== Image loading skeleton =====
+   Animated shimmer shown on an image container while the photo downloads.
+   The image is opaque (object-cover) and paints on top once loaded, hiding the
+   shimmer — no JS needed. Reduced-motion (above) neutralizes the sweep to a
+   static tint, so it never becomes a distracting perpetual animation. */
+@keyframes img-shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+.img-skeleton {
+  background-color: var(--color-surface);
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 65%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: img-shimmer 1.6s linear infinite;
+}
+.img-skeleton-dark {
+  background-color: #0a0805;
+  background-image: linear-gradient(
+    100deg,
+    rgba(201, 168, 76, 0) 35%,
+    rgba(201, 168, 76, 0.14) 50%,
+    rgba(201, 168, 76, 0) 65%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: img-shimmer 1.6s linear infinite;
+}
+
 /* ===== Bokeh Particle Animation ===== */
 @keyframes bokeh-float {
   0%, 100% {
