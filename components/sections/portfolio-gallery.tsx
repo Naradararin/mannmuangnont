@@ -107,6 +107,23 @@ export function PortfolioGallery() {
     return Array.from(set)
   }, [tierEntries, cat])
 
+  // recommendedIds: the 3 lowest-featuredOrder real (non-placeholder) entries in
+  // the current tier. Tied to the specific projects, so the badge stays put when
+  // a category/curtain-type filter is applied (and simply isn't shown if a
+  // recommended entry gets filtered out of `filtered`).
+  const recommendedIds = useMemo(
+    () =>
+      new Set(
+        tierEntries
+          .filter(e => !e.isPlaceholder)
+          .slice()
+          .sort((a, b) => (a.featuredOrder ?? Infinity) - (b.featuredOrder ?? Infinity))
+          .slice(0, 3)
+          .map(e => e.id),
+      ),
+    [tierEntries],
+  )
+
   const filtered = useMemo(
     () =>
       tierEntries
@@ -127,31 +144,17 @@ export function PortfolioGallery() {
     setTag(null)
   }
 
-  // Tier tab classes
-  function tierCls(t: Tier) {
-    const active = tier === t
-    const isLuxTab = t === 'Luxury'
-    if (active) {
-      if (isLuxTab) return `${PILL} bg-[#c9a84c] text-[#0d0a05] border-transparent font-medium`
-      if (isLux) return `${PILL} bg-[rgba(201,168,76,0.15)] text-[#e8d5a3] border-[rgba(201,168,76,0.3)]`
-      if (isHE) return `${PILL} bg-[#C7C3B0] text-[#664E44] border-transparent`
-      return `${PILL} bg-ink text-canvas border-transparent`
-    }
-    if (isLux) {
-      return isLuxTab
-        ? `${PILL} border-[rgba(201,168,76,0.28)] text-[rgba(201,168,76,0.55)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.5)]`
-        : `${PILL} border-[rgba(201,168,76,0.2)] text-[rgba(201,168,76,0.45)] hover:text-[#c9a84c] hover:border-[rgba(201,168,76,0.4)]`
-    }
-    if (isHE) {
-      // Keep the Luxury tab's gold styling; cocoa-tint the others
-      return isLuxTab
-        ? `${PILL} border-ink/10 text-[#a07830]/70 hover:text-[#c9a84c] hover:border-[rgba(192,160,80,0.4)]`
-        : `${PILL} border-[rgba(102,78,68,0.2)] text-[rgba(102,78,68,0.55)] hover:text-[#664E44] hover:border-[rgba(102,78,68,0.4)]`
-    }
-    return isLuxTab
-      ? `${PILL} border-ink/10 text-[#a07830]/70 hover:text-[#c9a84c] hover:border-[rgba(192,160,80,0.4)]`
-      : `${PILL} border-ink/20 text-ink/55 hover:text-ink hover:border-ink/40`
+  // Tier tab text color (theme-aware). The Luxury tab keeps a gold tint in every
+  // theme to tease the premium level; inactive tabs are dimmed via opacity, not
+  // a separate color, so hover can simply restore full strength.
+  function tierColor(t: Tier) {
+    if (t === 'Luxury') return isLux ? L.gold : '#a07830'
+    if (isLux) return L.champ
+    if (isHE) return HE.text
+    return 'var(--color-ink)'
   }
+  // Active underline color follows the active theme's accent.
+  const tierUnderline = isLux ? L.gold : isHE ? HE.accent : 'var(--color-sage)'
 
   // Category pill classes
   function catCls(c: string | null) {
@@ -223,28 +226,51 @@ export function PortfolioGallery() {
           </p>
         </FadeIn>
 
-        {/* Tier tabs */}
-        <div className="mt-8 flex flex-wrap gap-2">
-          {TIER_ORDER.map(t => (
-            <button key={t} onClick={() => changeTier(t)} className={tierCls(t)}>
-              {t === 'Luxury' ? (
-                <span className="flex items-center gap-1.5">
-                  <span>Luxury</span>
+        {/* Tier selector — top-level "choose a quality level" control, styled as
+            large underline tabs and visually separated (label + divider) from the
+            smaller rounded filter pills below so it doesn't read as another filter. */}
+        <div
+          className="mt-8 border-b pb-4"
+          style={{ borderColor: isLux ? L.border : isHE ? 'rgba(102,78,68,0.15)' : 'rgba(20,18,15,0.1)' }}
+        >
+          <p
+            className="mb-3 font-dm-sans text-[10px] uppercase tracking-[0.2em]"
+            style={{ color: isLux ? L.muted : isHE ? HE.muted : 'rgba(20,18,15,0.4)' }}
+          >
+            {lang === 'th' ? 'เลือกระดับงาน' : 'Choose a level'}
+          </p>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
+            {TIER_ORDER.map(t => {
+              const active = tier === t
+              return (
+                <button
+                  key={t}
+                  onClick={() => changeTier(t)}
+                  aria-pressed={active}
+                  className={`relative cursor-pointer pb-1.5 font-dm-sans text-[15px] tracking-[0.02em] transition-opacity md:text-[16px] ${
+                    active ? 'opacity-100' : 'opacity-55 hover:opacity-90'
+                  }`}
+                  style={{ color: tierColor(t), fontWeight: active ? 600 : 400 }}
+                >
+                  {t === 'Luxury' ? (
+                    <span className="flex items-center gap-1.5">
+                      <span>Luxury</span>
+                      <span style={{ color: tierColor(t), fontSize: 11, lineHeight: 1 }}>✦</span>
+                    </span>
+                  ) : (
+                    lang === 'en' ? TIER_EN[t] : t
+                  )}
                   <span
+                    className="absolute inset-x-0 -bottom-px h-[2px] origin-left rounded-full transition-transform duration-300"
                     style={{
-                      color: tier === t ? '#0d0a05' : '#c9a84c',
-                      fontSize: 9,
-                      lineHeight: 1,
+                      backgroundColor: tierUnderline,
+                      transform: active ? 'scaleX(1)' : 'scaleX(0)',
                     }}
-                  >
-                    ✦
-                  </span>
-                </span>
-              ) : (
-                lang === 'en' ? TIER_EN[t] : t
-              )}
-            </button>
-          ))}
+                  />
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Category filter (only when > 1 category exists in tier) */}
@@ -297,9 +323,9 @@ export function PortfolioGallery() {
         >
           {filtered.map(entry =>
             isLux ? (
-              <LuxuryCard key={entry.id} entry={entry} lang={lang} />
+              <LuxuryCard key={entry.id} entry={entry} lang={lang} recommended={recommendedIds.has(entry.id)} />
             ) : (
-              <StandardCard key={entry.id} entry={entry} lang={lang} />
+              <StandardCard key={entry.id} entry={entry} lang={lang} recommended={recommendedIds.has(entry.id)} />
             ),
           )}
         </div>
@@ -312,7 +338,7 @@ export function PortfolioGallery() {
 // Standard card (ทั่วไป + High-End)
 // ---------------------------------------------------------------------------
 
-function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' }) {
+function StandardCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang: 'th' | 'en'; recommended?: boolean }) {
   const [mainIdx, setMainIdx] = useState(0)
   const total = entry.imageUrls.length
   const mainUrl = entry.imageUrls[mainIdx] ?? ''
@@ -331,6 +357,12 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
         aria-label={lang === 'th' ? `ดูโปรเจกต์ ${entry.location.th}` : `View project: ${entry.location.en}`}
         className="absolute inset-0 z-10"
       />
+      {recommended && (
+        <span className="absolute left-3 top-3 z-20 flex items-center gap-1 rounded-full bg-sage px-2.5 py-1 font-dm-sans text-[9px] uppercase tracking-[0.1em] text-canvas shadow-sm">
+          <span style={{ fontSize: 9, lineHeight: 1 }}>✦</span>
+          {lang === 'th' ? 'แนะนำ' : 'Recommended'}
+        </span>
+      )}
       {/* Main image */}
       <div
         className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface to-sage/15"
@@ -449,7 +481,7 @@ function StandardCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en
 // Luxury card — gold/espresso theme
 // ---------------------------------------------------------------------------
 
-function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' }) {
+function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang: 'th' | 'en'; recommended?: boolean }) {
   const isProcessResult = entry.imageType === 'process-and-result'
   // Every card now links to its detail page (bespoke route or generic template);
   // the flag still drives the "View Project" hover affordance + arrow.
@@ -579,7 +611,16 @@ function LuxuryCard({ entry, lang }: { entry: PortfolioEntry; lang: 'th' | 'en' 
   const sty = { background: L.card, border: `1px solid ${L.border}` }
 
   return (
-    <Link href={detailPath(entry)} className={cls} style={sty}>
+    <Link href={detailPath(entry)} className={`relative ${cls}`} style={sty}>
+      {recommended && (
+        <span
+          className="absolute left-3 top-3 z-20 flex items-center gap-1 rounded-full px-2.5 py-1 font-dm-sans text-[9px] uppercase tracking-[0.1em]"
+          style={{ background: 'rgba(201,168,76,0.92)', color: '#0d0a05' }}
+        >
+          <span style={{ fontSize: 9, lineHeight: 1 }}>✦</span>
+          {lang === 'th' ? 'แนะนำ' : 'Recommended'}
+        </span>
+      )}
       {imageArea}
       {infoArea}
     </Link>
