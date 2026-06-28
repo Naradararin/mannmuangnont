@@ -133,8 +133,7 @@ function CategoryCard({
     >
       {/* ── Cover (click to open full-screen lightbox) ──────────── */}
       <div
-        className="relative aspect-[4/3] cursor-zoom-in overflow-hidden"
-        style={{ background: L.slot }}
+        className="img-skeleton-dark relative aspect-[4/3] cursor-zoom-in overflow-hidden"
         onClick={() => onOpen(idx)}
         role="button"
         tabIndex={0}

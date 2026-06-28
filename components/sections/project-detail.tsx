@@ -81,6 +81,8 @@ export function ProjectDetail({
 }) {
   const { lang } = useLang()
   const t = THEMES[entry.tier]
+  // Loading shimmer matches the page theme (Luxury is dark, others light).
+  const skeleton = entry.tier === 'Luxury' ? 'img-skeleton-dark' : 'img-skeleton'
 
   return (
     <div className="min-h-screen" style={{ background: t.bg, color: t.text }}>
@@ -167,7 +169,7 @@ export function ProjectDetail({
 
       {/* ── Gallery ─────────────────────────────────────────────── */}
       <main className="mx-auto max-w-6xl px-5 py-10 sm:px-10 lg:px-16">
-        <Gallery images={entry.imageUrls} theme={t} lang={lang} />
+        <Gallery images={entry.imageUrls} theme={t} lang={lang} skeleton={skeleton} />
       </main>
 
       {/* ── Recommended ─────────────────────────────────────────── */}
@@ -192,7 +194,7 @@ export function ProjectDetail({
 
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {recommended.map(r => (
-                <RecommendedCard key={r.id} entry={r} theme={t} lang={lang} />
+                <RecommendedCard key={r.id} entry={r} theme={t} lang={lang} skeleton={skeleton} />
               ))}
             </div>
           </div>
@@ -219,7 +221,7 @@ export function ProjectDetail({
 // ---------------------------------------------------------------------------
 // Gallery — main image + prev/next + thumbnail strip (swipe on touch)
 // ---------------------------------------------------------------------------
-function Gallery({ images, theme, lang }: { images: string[]; theme: Theme; lang: 'th' | 'en' }) {
+function Gallery({ images, theme, lang, skeleton }: { images: string[]; theme: Theme; lang: 'th' | 'en'; skeleton: string }) {
   const [idx, setIdx] = useState(0)
   const total = images.length
   const touchX = useRef<number | null>(null)
@@ -243,8 +245,7 @@ function Gallery({ images, theme, lang }: { images: string[]; theme: Theme; lang
   return (
     <div>
       <div
-        className="relative mx-auto aspect-[3/4] w-full max-w-[560px] overflow-hidden rounded-sm"
-        style={{ background: theme.slot }}
+        className={`${skeleton} relative mx-auto aspect-[3/4] w-full max-w-[560px] overflow-hidden rounded-sm`}
         onTouchStart={total > 1 ? e => { touchX.current = e.touches[0].clientX } : undefined}
         onTouchEnd={total > 1 ? e => {
           if (touchX.current === null) return
@@ -318,7 +319,7 @@ function Gallery({ images, theme, lang }: { images: string[]; theme: Theme; lang
 // ---------------------------------------------------------------------------
 // Recommended card — compact, links to the project's detail page
 // ---------------------------------------------------------------------------
-function RecommendedCard({ entry, theme, lang }: { entry: PortfolioEntry; theme: Theme; lang: 'th' | 'en' }) {
+function RecommendedCard({ entry, theme, lang, skeleton }: { entry: PortfolioEntry; theme: Theme; lang: 'th' | 'en'; skeleton: string }) {
   const href = entry.detailHref ?? `/portfolio/${entry.id}`
   const cover = entry.imageUrls[0] ?? ''
 
@@ -328,7 +329,7 @@ function RecommendedCard({ entry, theme, lang }: { entry: PortfolioEntry; theme:
       className="group overflow-hidden rounded-sm transition-shadow hover:shadow-md"
       style={{ background: theme.card, border: `1px solid ${theme.border}` }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden" style={{ background: theme.slot }}>
+      <div className={`relative aspect-[4/3] overflow-hidden ${cover ? skeleton : ''}`} style={cover ? undefined : { background: theme.slot }}>
         {cover ? (
           <Image
             src={cover}

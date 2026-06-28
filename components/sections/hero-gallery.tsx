@@ -112,7 +112,7 @@ function GalleryCard({
       <a href="#portfolio" className="block" tabIndex={-1} draggable={false}>
         {/* Image wrapper — clips the scale-in zoom */}
         <div
-          className="relative overflow-hidden rounded-2xl"
+          className="img-skeleton relative overflow-hidden rounded-2xl"
           style={{ width, height }}
         >
           {/* Image zooms in gently on hover */}
@@ -326,7 +326,7 @@ function MobileHero({
         {cards.map((card, i) => (
           <div
             key={i}
-            className="relative h-full shrink-0 snap-start"
+            className="img-skeleton relative h-full shrink-0 snap-start"
             style={{ width: `calc(100% - ${MOBILE_PEEK}px)` }}
           >
             <Image
