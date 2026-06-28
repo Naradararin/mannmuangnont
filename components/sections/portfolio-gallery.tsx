@@ -7,7 +7,14 @@ import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 import { PORTFOLIO, Tier, PortfolioEntry, detailPath } from '@/lib/portfolio-data'
 
+// Deep-link priority: "first tier containing a category" lookup (see :70).
+// Left in its original order ON PURPOSE so Collections deep-links keep resolving
+// to the same tier as before — do not reorder this for visual tab changes.
 const TIER_ORDER: Tier[] = ['ทั่วไป', 'High-End', 'Luxury']
+
+// Tab left-to-right display order (visual only). Decoupled from TIER_ORDER so the
+// tab sequence can change without affecting deep-link routing.
+const TIER_DISPLAY_ORDER: Tier[] = ['High-End', 'Luxury', 'ทั่วไป']
 // Canonical Thai keys used for filter state; order controls pill order
 const CAT_ORDER = ['ผ้าม่าน', 'วอลเปเปอร์', 'กระเบื้องยาง']
 const CAT_EN: Record<string, string> = {
@@ -48,7 +55,7 @@ const PILL = 'rounded-full px-4 py-1.5 font-dm-sans text-[11px] tracking-[0.08em
 
 export function PortfolioGallery() {
   const { lang } = useLang()
-  const [tier, setTier] = useState<Tier>('ทั่วไป')
+  const [tier, setTier] = useState<Tier>('High-End')
   const [cat, setCat] = useState<string | null>(null)   // Thai key
   const [tag, setTag] = useState<string | null>(null)   // Thai key
   const isLux = tier === 'Luxury'
@@ -240,7 +247,7 @@ export function PortfolioGallery() {
             {lang === 'th' ? 'เลือกระดับงาน' : 'Choose a level'}
           </p>
           <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
-            {TIER_ORDER.map(t => {
+            {TIER_DISPLAY_ORDER.map(t => {
               const active = tier === t
               return (
                 <button
