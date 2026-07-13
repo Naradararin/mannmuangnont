@@ -7,18 +7,18 @@ import { useLang } from '@/lib/lang'
 
 const LINKS = {
   th: [
-    { label: 'เกี่ยวกับเรา', href: '#about' },
-    { label: 'สินค้า', href: '#collections' },
-    { label: 'ผลงาน', href: '#portfolio' },
-    { label: 'รีวิว', href: '#testimonials' },
-    { label: 'ติดต่อ', href: '#contact' },
+    { label: 'เกี่ยวกับเรา', href: '/#about' },
+    { label: 'สินค้า', href: '/#collections' },
+    { label: 'ผลงาน', href: '/#portfolio' },
+    { label: 'รีวิว', href: '/#testimonials' },
+    { label: 'ติดต่อ', href: '/#contact' },
   ],
   en: [
-    { label: 'About', href: '#about' },
-    { label: 'Products', href: '#collections' },
-    { label: 'Portfolio', href: '#portfolio' },
-    { label: 'Reviews', href: '#testimonials' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'About', href: '/#about' },
+    { label: 'Products', href: '/#collections' },
+    { label: 'Portfolio', href: '/#portfolio' },
+    { label: 'Reviews', href: '/#testimonials' },
+    { label: 'Contact', href: '/#contact' },
   ],
 }
 
@@ -76,7 +76,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 md:px-10">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <img
             src="/images/brand/logo.png"
             alt="ม่านเมืองนนท์"
@@ -150,7 +150,7 @@ export function Navbar() {
             </a>
           </div>
           <a
-            href="#contact"
+            href="/#contact"
             className="rounded-full bg-sage px-5 py-2.5 font-dm-sans text-[11px] uppercase tracking-[0.18em] text-canvas transition-opacity hover:opacity-90"
           >
             {CTA[lang]}
@@ -240,7 +240,7 @@ export function Navbar() {
                 </a>
               </div>
               <a
-                href="#contact"
+                href="/#contact"
                 onClick={() => setOpen(false)}
                 className="mt-2 flex h-11 items-center justify-center rounded-full bg-sage font-dm-sans text-[11px] uppercase tracking-[0.18em] text-canvas"
               >
