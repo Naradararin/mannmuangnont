@@ -373,9 +373,9 @@ function MobileHero({
             <p className="font-dm-sans text-[10px] uppercase tracking-[0.2em] text-canvas/70">
               {copy.eyebrow}
             </p>
-            <h1 className="font-sov-wong mt-2 text-[44px] leading-[1.04] text-canvas drop-shadow-[0_1px_12px_rgba(20,18,15,0.35)]">
+            <p className="font-sov-wong mt-2 text-[44px] leading-[1.04] text-canvas drop-shadow-[0_1px_12px_rgba(20,18,15,0.35)]">
               {copy.brand}
-            </h1>
+            </p>
             <p className="mt-2 font-sarabun text-[15px] font-light leading-[1.6] text-canvas/85">
               {copy.tagline}
             </p>

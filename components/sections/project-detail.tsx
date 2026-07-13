@@ -169,7 +169,7 @@ export function ProjectDetail({
 
       {/* ── Gallery ─────────────────────────────────────────────── */}
       <main className="mx-auto max-w-6xl px-5 py-10 sm:px-10 lg:px-16">
-        <Gallery images={entry.imageUrls} theme={t} lang={lang} skeleton={skeleton} />
+        <Gallery images={entry.imageUrls} altBase={entry.description} theme={t} lang={lang} skeleton={skeleton} />
       </main>
 
       {/* ── Recommended ─────────────────────────────────────────── */}
@@ -221,7 +221,7 @@ export function ProjectDetail({
 // ---------------------------------------------------------------------------
 // Gallery — main image + prev/next + thumbnail strip (swipe on touch)
 // ---------------------------------------------------------------------------
-function Gallery({ images, theme, lang, skeleton }: { images: string[]; theme: Theme; lang: 'th' | 'en'; skeleton: string }) {
+function Gallery({ images, altBase, theme, lang, skeleton }: { images: string[]; altBase: string; theme: Theme; lang: 'th' | 'en'; skeleton: string }) {
   const [idx, setIdx] = useState(0)
   const total = images.length
   const touchX = useRef<number | null>(null)
@@ -256,7 +256,7 @@ function Gallery({ images, theme, lang, skeleton }: { images: string[]; theme: T
       >
         <Image
           src={images[idx]}
-          alt=""
+          alt={`${altBase} — รูปที่ ${idx + 1}`}
           fill
           quality={85}
           sizes="(max-width: 640px) 100vw, 560px"
@@ -333,7 +333,7 @@ function RecommendedCard({ entry, theme, lang, skeleton }: { entry: PortfolioEnt
         {cover ? (
           <Image
             src={cover}
-            alt=""
+            alt={entry.description}
             fill
             sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"

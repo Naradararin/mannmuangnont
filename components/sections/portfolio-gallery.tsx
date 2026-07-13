@@ -384,7 +384,7 @@ function StandardCard({ entry, lang, recommended }: { entry: PortfolioEntry; lan
         {mainUrl ? (
           <Image
             src={mainUrl}
-            alt=""
+            alt={entry.description}
             fill
             sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
@@ -502,7 +502,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
           return (
             <div key={i} className={`relative aspect-square overflow-hidden ${url ? 'img-skeleton-dark' : ''}`} style={url ? undefined : { background: L.slot }}>
               {url ? (
-                <Image src={url} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
+                <Image src={url} alt={`${entry.description} — กระบวนการติดตั้ง`} fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center gap-0.5">
                   <span className="font-dm-sans text-[8px] uppercase tracking-[0.15em]" style={{ color: L.gold, opacity: 0.4 }}>
@@ -516,7 +516,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
         })}
         <div className={`relative aspect-square overflow-hidden ${entry.imageUrls[0] ? 'img-skeleton-dark' : ''}`} style={entry.imageUrls[0] ? undefined : { background: L.slot }}>
           {entry.imageUrls[0] ? (
-            <Image src={entry.imageUrls[0]} alt="" fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
+            <Image src={entry.imageUrls[0]} alt={entry.description} fill sizes="(max-width: 1023px) 33vw, 160px" className="object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center">
               <span className="font-dm-sans text-[8px] uppercase tracking-[0.15em]" style={{ color: L.gold, opacity: 0.4 }}>
@@ -537,7 +537,7 @@ function LuxuryCard({ entry, lang, recommended }: { entry: PortfolioEntry; lang:
       {entry.imageUrls[0] ? (
         <Image
           src={entry.imageUrls[0]}
-          alt=""
+          alt={entry.description}
           fill
           sizes="(max-width: 639px) 100vw, 50vw"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
