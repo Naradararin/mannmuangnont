@@ -5,6 +5,7 @@ import { Phone } from 'lucide-react'
 import { SiLine } from 'react-icons/si'
 import { FadeIn, FadeInItem } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
+import { CURTAINS_FAQ as FAQ } from '@/components/sections/curtains-faq'
 
 // ---------------------------------------------------------------------------
 // All facts on this page are drawn from real completed projects in
@@ -65,33 +66,6 @@ const PROPERTY_TYPES = {
     { name: 'Townhouses', desc: 'Real example: a commercial building on the Chao Phraya riverside, Pathum Thani.' },
     { name: 'Knock-down Houses', desc: 'Real example: The Village Hathairat-Wongwaen, Bangkok.' },
     { name: 'Luxury Homes / Mansions', desc: 'A premium project with a full motorised system at Thep Rak 49, Bangkok.' },
-  ],
-}
-
-const FAQ = {
-  th: [
-    { q: 'ผ้าม่านกันแสงได้กี่เปอร์เซ็นต์?', a: 'ผ้า Dimout กันแสงได้ 80-90% ส่วนผ้า Blackout กันแสงได้เกือบ 100% เลือกได้ตามการใช้งานของแต่ละห้อง' },
-    { q: 'ร้านอยู่แถวไหน?', a: 'ร้านตั้งอยู่ที่ตำบลบางใหญ่ อำเภอบางใหญ่ จังหวัดนนทบุรี (ถนนกาญจนาภิเษก ซอยกันตนา หมู่บ้านภัสสร 8 ซอย 16) ให้บริการในรัศมี 60-70 กม. ครอบคลุมนนทบุรีและกรุงเทพฯ' },
-    { q: 'ผ้าม่านมีกี่แบบ?', a: 'หลัก ๆ มี 4 แบบ คือ ม่านจีบ ม่านลอน ม่านตาไก่ และม่านพับ นอกจากนี้ยังมีมู่ลี่ ม่านม้วน ม่านปรับแสง และระบบมอเตอร์ไฟฟ้าให้เลือกเพิ่มเติมตามความเหมาะสมของแต่ละพื้นที่' },
-    { q: 'มีโปรโมชั่นหรือราคาเท่าไหร่?', a: 'มีแพ็กเกจแบบเหมาจ่าย ราคาขึ้นอยู่กับขนาดและประเภทผ้า สอบถามได้หลังสำรวจหน้างานฟรี รับชำระเป็นเงินสดหรือโอนเท่านั้น' },
-    { q: 'เป็นผ้าประเภทไหน?', a: 'มีผ้า Dimout และผ้า Blackout ให้เลือกตามการใช้งาน' },
-    { q: 'รับติดตั้งฉากกั้นห้อง ซักผ้าม่านเก่า ไหม?', a: 'รับทั้งสองบริการ ทั้งติดตั้งฉากกั้นห้องและซักผ้าม่านเก่า' },
-    { q: 'ติดตั้งใช้เวลานานแค่ไหน และนัดส่งงานยังไง?', a: 'เฉลี่ยประมาณ 5 ชม./หลัง สำหรับการติดตั้ง (ไม่รวมเวลาตัดเย็บผ้าม่าน) ส่วนคิวส่งงานเรียงตามลำดับงานที่รับเข้ามาก่อน-หลัง' },
-    { q: 'ถ้าเป็นคอนโด ต้องเตรียมเอกสารขออนุญาตนิติบุคคลไหม?', a: 'ลูกค้าส่วนใหญ่ของเราเป็นบุคคลธรรมดา ไม่ค่อยพบกรณีที่ต้องเตรียมเอกสารนิติบุคคลเพิ่มเติม' },
-    { q: 'มีรับประกันไหม?', a: 'รับประกัน 1 ปี ไม่มีค่าใช้จ่ายเพิ่มเติมใด ๆ' },
-    { q: 'ระบบมอเตอร์ไฟฟ้าต้องเดินสายไฟใหม่ไหม?', a: 'ต้องเดินสายไฟเพิ่มเติมสำหรับระบบมอเตอร์ไฟฟ้า ทีมงานจัดการให้ตอนติดตั้ง' },
-  ],
-  en: [
-    { q: 'How much light do the curtains block?', a: 'Dimout fabric blocks 80-90% of light. Blackout fabric blocks nearly 100%. Choose based on how each room is used.' },
-    { q: 'Where is the shop located?', a: 'We\u2019re based in Bang Yai, Nonthaburi (Kanchanaphisek Road, Soi Kantana, Passorn 8 Village Soi 16). We serve within a 60-70 km radius, covering Nonthaburi and Bangkok.' },
-    { q: 'How many curtain styles are there?', a: 'Four main styles: pleated, ripple-fold, eyelet, and roman shade. We also offer venetian blinds, roller curtains, light-filtering curtains, and motorised systems depending on the space.' },
-    { q: 'Do you have promotions or pricing?', a: 'We offer flat-rate packages; price depends on size and fabric type. Ask after a free site survey. We accept cash or bank transfer only.' },
-    { q: 'What fabric types do you use?', a: 'Dimout and Blackout fabrics, chosen based on how the room is used.' },
-    { q: 'Do you install room dividers or wash old curtains?', a: 'Yes, we offer both services — room divider installation and washing existing curtains.' },
-    { q: 'How long does installation take, and how is scheduling handled?', a: 'Installation averages about 5 hours per home (not including sewing time). Jobs are scheduled in the order they were booked.' },
-    { q: 'For condos, do we need juristic-person permit paperwork?', a: 'Most of our clients are individual homeowners — we rarely encounter cases needing extra juristic-person paperwork.' },
-    { q: 'Is there a warranty?', a: 'Yes, a 1-year warranty at no additional cost.' },
-    { q: 'Does a motorised system need new wiring?', a: 'Yes, additional wiring is needed for motorised systems — our team handles this during installation.' },
   ],
 }
 
@@ -342,5 +316,3 @@ export function CurtainsContent() {
     </main>
   )
 }
-
-export { FAQ as CURTAINS_FAQ }

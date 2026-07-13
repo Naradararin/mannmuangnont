@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CURTAINS_FAQ } from '@/components/sections/curtains-content'
+import { CURTAINS_FAQ } from '@/components/sections/curtains-faq'
 
 export const metadata: Metadata = {
   title: 'ผ้าม่าน นนทบุรี กรุงเทพ ติดตั้งโดยช่างประจำ',
