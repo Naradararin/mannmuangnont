@@ -11,6 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
+  const servicePages: MetadataRoute.Sitemap = [
+    { url: `${BASE}/curtains`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE}/wallpaper`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+  ]
+
   return [
     {
       url: BASE,
@@ -18,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1,
     },
+    ...servicePages,
     ...portfolio,
   ]
 }
