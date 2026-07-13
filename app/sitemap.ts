@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const servicePages: MetadataRoute.Sitemap = [
     { url: `${BASE}/curtains`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/wallpaper`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE}/tiles`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
   ]
 
   return [
