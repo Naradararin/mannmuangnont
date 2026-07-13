@@ -46,6 +46,7 @@ export const metadata: Metadata = {
   description:
     'ร้านผ้าม่าน นนทบุรี ติดตั้งวอลเปเปอร์และกระเบื้องครบวงจร โดยช่างประจำพื้นที่บางใหญ่ สำรวจหน้างานฟรี ใบเสนอราคาใน 24 ชม.',
   alternates: { canonical: '/' },
+  verification: { google: 'mhiVsMvthEr_B9InOD5ILXGACRxv8wG7RvgSBbkArOo' },
   openGraph: {
     type: 'website',
     locale: 'th_TH',
