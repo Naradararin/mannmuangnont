@@ -178,7 +178,7 @@ export function CurtainsContent() {
       {/* Curtain types grid */}
       <section aria-label={c.typesEyebrow} className="mx-auto max-w-[1280px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.typesEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.typesEyebrow}</h2>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {types.map((t, i) => {
@@ -215,7 +215,7 @@ export function CurtainsContent() {
       <section aria-label={c.fabricEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.fabricEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.fabricEyebrow}</h2>
             <div className="mt-8 overflow-hidden rounded-sm border border-ink/10">
               {/* Desktop / tablet: real table */}
               <table className="hidden w-full border-collapse font-sarabun text-[13px] md:table">
@@ -269,7 +269,7 @@ export function CurtainsContent() {
       {/* Sun direction guide */}
       <section aria-label={c.directionEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.directionEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.directionEyebrow}</h2>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
           {dirs.map((d, i) => (
@@ -288,7 +288,7 @@ export function CurtainsContent() {
       <section aria-label={c.propertyEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.propertyEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.propertyEyebrow}</h2>
           </FadeIn>
           <FadeIn stagger className="mt-8 space-y-6">
             {props.map((p, i) => (
@@ -304,7 +304,7 @@ export function CurtainsContent() {
       {/* Service area */}
       <section aria-label={c.areaEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</h2>
           <p className="mt-4 font-sarabun text-[15px] leading-[1.9] text-ink/70">{c.areaText}</p>
         </FadeIn>
       </section>
@@ -313,7 +313,7 @@ export function CurtainsContent() {
       <section style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto grid max-w-[1000px] grid-cols-1 gap-14 px-6 py-[56px] md:grid-cols-[2fr_1fr] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.processEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.processEyebrow}</h2>
             <ol className="mt-6 space-y-5">
               {c.process.map((step, i) => (
                 <li key={step.title} className="flex gap-4">
@@ -327,7 +327,7 @@ export function CurtainsContent() {
             </ol>
           </FadeIn>
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.extraEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.extraEyebrow}</h2>
             <ul className="mt-6 space-y-3">
               {c.extra.map(item => (
                 <li key={item} className="font-sarabun text-sm text-ink/80">— {item}</li>
@@ -340,7 +340,7 @@ export function CurtainsContent() {
       {/* FAQ */}
       <section aria-label={c.faqEyebrow} className="mx-auto max-w-[800px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</h2>
         </FadeIn>
         <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
           {faq.map((item, i) => (

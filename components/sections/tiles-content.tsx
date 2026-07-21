@@ -115,7 +115,7 @@ export function TilesContent() {
       {/* Features */}
       <section aria-label={c.featuresEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.featuresEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.featuresEyebrow}</h2>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
           {features.map((f, i) => (
@@ -133,7 +133,7 @@ export function TilesContent() {
       <section aria-label={c.processEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.processEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.processEyebrow}</h2>
             <ol className="mt-6 space-y-5">
               {process.map((step, i) => (
                 <li key={step.title} className="flex gap-4">
@@ -152,7 +152,7 @@ export function TilesContent() {
       {/* Scope */}
       <section aria-label={c.scopeEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.scopeEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.scopeEyebrow}</h2>
           <p className="mt-4 font-sarabun text-[15px] leading-[1.9] text-ink/70">{c.scopeText}</p>
         </FadeIn>
       </section>
@@ -161,7 +161,7 @@ export function TilesContent() {
       <section aria-label={c.projectEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectEyebrow}</h2>
             <Link
               href="/portfolio/wood-grain-2026-06"
               className="mt-6 flex items-center gap-5 overflow-hidden rounded-sm border border-ink/10 bg-[#FAF9F6] p-3 pr-6 hover:border-sage/40"
@@ -185,7 +185,7 @@ export function TilesContent() {
       {/* Service area */}
       <section aria-label={c.areaEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</h2>
           <p className="mt-4 font-sarabun text-[15px] leading-[1.9] text-ink/70">{c.areaText}</p>
         </FadeIn>
       </section>
@@ -194,7 +194,7 @@ export function TilesContent() {
       <section aria-label={c.faqEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[800px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</h2>
           </FadeIn>
           <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
             {faq.map((item, i) => (

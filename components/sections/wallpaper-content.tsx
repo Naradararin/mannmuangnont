@@ -130,7 +130,7 @@ export function WallpaperContent() {
       {/* Services */}
       <section aria-label={c.servicesEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.servicesEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.servicesEyebrow}</h2>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {c.services.map((s, i) => (
@@ -148,7 +148,7 @@ export function WallpaperContent() {
       <section aria-label={c.compareEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.compareEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.compareEyebrow}</h2>
             <div className="mt-8 overflow-hidden rounded-sm border border-ink/10">
               {/* Desktop / tablet: real table */}
               <table className="hidden w-full border-collapse font-sarabun text-[13px] md:table">
@@ -199,7 +199,7 @@ export function WallpaperContent() {
       {/* Which rooms */}
       <section aria-label={c.roomsEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.roomsEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.roomsEyebrow}</h2>
           <p className="mt-4 font-sarabun text-[15px] leading-[1.9] text-ink/70">{c.roomsText}</p>
         </FadeIn>
       </section>
@@ -208,7 +208,7 @@ export function WallpaperContent() {
       <section aria-label={c.projectsEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectsEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectsEyebrow}</h2>
           </FadeIn>
           <FadeIn stagger className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {projects.map((p, i) => {
@@ -242,7 +242,7 @@ export function WallpaperContent() {
       {/* Service area */}
       <section aria-label={c.areaEyebrow} className="mx-auto max-w-[1000px] px-6 py-[56px] md:px-10 md:py-[88px]">
         <FadeIn>
-          <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</p>
+          <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.areaEyebrow}</h2>
           <p className="mt-4 font-sarabun text-[15px] leading-[1.9] text-ink/70">{c.areaText}</p>
         </FadeIn>
       </section>
@@ -251,7 +251,7 @@ export function WallpaperContent() {
       <section aria-label={c.faqEyebrow} style={{ backgroundColor: '#F4F1EA' }}>
         <div className="mx-auto max-w-[800px] px-6 py-[56px] md:px-10 md:py-[88px]">
           <FadeIn>
-            <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
+            <h2 className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</h2>
           </FadeIn>
           <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
             {faq.map((item, i) => (
