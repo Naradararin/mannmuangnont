@@ -3,17 +3,18 @@
 import { Phone } from 'lucide-react'
 import { SiLine, SiFacebook } from 'react-icons/si'
 import { useLang } from '@/lib/lang'
+import { trackContactClick } from '@/lib/analytics'
 
 const CONTENT = {
   th: {
     tagline: 'ผ้าม่าน · วอลเปเปอร์ · กระเบื้อง — ตกแต่งบ้านให้เป็นคุณ',
     nav: [
-      { label: 'ผ้าม่าน', href: '#collections' },
-      { label: 'วอลเปเปอร์', href: '#collections' },
-      { label: 'กระเบื้อง', href: '#collections' },
-      { label: 'ผลงาน', href: '#portfolio' },
-      { label: 'เกี่ยวกับเรา', href: '#about' },
-      { label: 'นัดสำรวจฟรี', href: 'https://www.facebook.com/yandsun' },
+      { label: 'ผ้าม่าน', href: '/curtains' },
+      { label: 'วอลเปเปอร์', href: '/wallpaper' },
+      { label: 'กระเบื้อง', href: '/tiles' },
+      { label: 'ผลงาน', href: '/#portfolio' },
+      { label: 'เกี่ยวกับเรา', href: '/#about' },
+      { label: 'นัดสำรวจฟรี', href: '/#contact' },
     ],
     address: ['55/76 หมู่ที่ 1 ต.บางใหญ่', 'อ.บางใหญ่ จ.นนทบุรี 11140'],
     contactHeading: 'ติดต่อเรา',
@@ -25,12 +26,12 @@ const CONTENT = {
   en: {
     tagline: 'Curtains · Wallpaper · Tiles — Curated for your home.',
     nav: [
-      { label: 'Curtains', href: '#collections' },
-      { label: 'Wallpaper', href: '#collections' },
-      { label: 'Floor Tiles', href: '#collections' },
-      { label: 'Portfolio', href: '#portfolio' },
-      { label: 'About', href: '#about' },
-      { label: 'Book a Visit', href: 'https://www.facebook.com/yandsun' },
+      { label: 'Curtains', href: '/curtains' },
+      { label: 'Wallpaper', href: '/wallpaper' },
+      { label: 'Floor Tiles', href: '/tiles' },
+      { label: 'Portfolio', href: '/#portfolio' },
+      { label: 'About', href: '/#about' },
+      { label: 'Book a Visit', href: '/#contact' },
     ],
     address: ['55/76 Moo 1, Bang Yai Sub-district', 'Bang Yai District, Nonthaburi 11140'],
     contactHeading: 'Contact',
@@ -101,6 +102,7 @@ export function Footer() {
               <div className="mt-3 flex flex-col gap-2.5">
                 <a
                   href="tel:0922294692"
+                  onClick={() => trackContactClick('call', 'footer')}
                   className="flex w-fit items-center gap-2 transition-colors hover:text-canvas"
                 >
                   <Phone size={14} className="shrink-0" />
@@ -110,6 +112,7 @@ export function Footer() {
                   href="https://line.me/ti/p/Hz-QrG-Dyo"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactClick('line', 'footer')}
                   className="flex w-fit items-center gap-2 transition-colors hover:text-canvas"
                 >
                   <SiLine size={14} className="shrink-0" />
@@ -119,6 +122,7 @@ export function Footer() {
                   href="https://www.facebook.com/yandsun"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactClick('facebook', 'footer')}
                   className="flex w-fit items-center gap-2 transition-colors hover:text-canvas"
                 >
                   <SiFacebook size={14} className="shrink-0" />

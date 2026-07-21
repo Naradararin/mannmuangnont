@@ -11,9 +11,15 @@ const COLLECTION_IMAGES = [
 ]
 
 // Portfolio category (Thai key used by PortfolioGallery's filter), parallel to
-// the product order below: Curtains / Wallpaper / Floor Tiles. Drives the
-// "ดูเพิ่มเติม" deep-link so each card opens the portfolio pre-filtered.
+// the product order below: Curtains / Wallpaper / Floor Tiles. Kept for any
+// other component that still deep-links into the filtered portfolio view.
 const COLLECTION_CATS = ['ผ้าม่าน', 'วอลเปเปอร์', 'กระเบื้องยาง']
+
+// Dedicated service page for each collection, in the same order as
+// `products` below (Curtains / Wallpaper / Vinyl Flooring). "ดูเพิ่มเติม"
+// now sends visitors to the real service page (with its own FAQ + schema)
+// instead of a same-page portfolio filter, so these pages stop being orphans.
+const COLLECTION_HREFS = ['/curtains', '/wallpaper', '/tiles']
 
 const CONTENT = {
   th: {
@@ -116,7 +122,7 @@ export function Collections() {
                   <h3 className="mt-4 font-cormorant text-2xl text-ink">{p.title}</h3>
                   <p className="mt-2 font-sarabun text-sm leading-[1.8] text-ink/70">{p.desc}</p>
                   <a
-                    href={`#portfolio?cat=${encodeURIComponent(COLLECTION_CATS[idx % COLLECTION_CATS.length])}`}
+                    href={COLLECTION_HREFS[idx % COLLECTION_HREFS.length]}
                     className="mt-auto inline-flex h-11 items-center pt-4 font-dm-sans text-[13px] tracking-[0.08em] text-ink underline decoration-transparent underline-offset-4 transition-colors hover:decoration-sage"
                   >
                     {p.cta}

@@ -1,11 +1,23 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import { SiLine } from 'react-icons/si'
 import { FadeIn, FadeInItem } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 import { WALLPAPER_FAQ as FAQ } from '@/components/sections/wallpaper-faq'
+import { PORTFOLIO } from '@/lib/portfolio-data'
+
+// thep-rak-49 lives on its own standalone page (not in the PORTFOLIO array),
+// so it needs an explicit fallback path — same pattern as curtains-content.tsx.
+const THEP_RAK_49_FALLBACK = '/images/portfolio/thep-rak-49/Wallpaper/473209.jpg'
+
+function thumbFor(portfolioHref: string): string | undefined {
+  const id = portfolioHref.replace('/portfolio/', '')
+  if (id === 'thep-rak-49') return THEP_RAK_49_FALLBACK
+  return PORTFOLIO.find(p => p.id === id)?.imageUrls[0]
+}
 
 // ---------------------------------------------------------------------------
 // All facts on this page are drawn from real completed projects in
@@ -90,15 +102,29 @@ export function WallpaperContent() {
   return (
     <main className="bg-canvas text-ink">
       {/* Hero / Intro */}
-      <section className="mx-auto max-w-[1000px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
-        <FadeIn>
-          <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
-            {c.h1}
-          </h1>
-          <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
-            {c.intro}
-          </p>
-        </FadeIn>
+      <section className="mx-auto max-w-[1280px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
+          <FadeIn>
+            <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
+              {c.h1}
+            </h1>
+            <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
+              {c.intro}
+            </p>
+          </FadeIn>
+          <FadeIn>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-sm">
+              <Image
+                src="/images/portfolio/nichatra-high-end-06-02-26/628420878_1353620610111708_633601835838337285_n.jpg"
+                alt={c.h1}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Services */}
@@ -107,8 +133,8 @@ export function WallpaperContent() {
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.servicesEyebrow}</p>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {c.services.map(s => (
-            <FadeInItem key={s.title}>
+          {c.services.map((s, i) => (
+            <FadeInItem key={i}>
               <div className="h-full rounded-sm border border-ink/10 bg-[#FAF9F6] p-6">
                 <h3 className="font-sarabun text-base font-medium text-ink">{s.title}</h3>
                 <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/65">{s.desc}</p>
@@ -124,7 +150,8 @@ export function WallpaperContent() {
           <FadeIn>
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.compareEyebrow}</p>
             <div className="mt-8 overflow-hidden rounded-sm border border-ink/10">
-              <table className="w-full border-collapse font-sarabun text-[13px]">
+              {/* Desktop / tablet: real table */}
+              <table className="hidden w-full border-collapse font-sarabun text-[13px] md:table">
                 <thead>
                   <tr className="border-b border-ink/10 bg-[#FAF9F6]">
                     <th className="p-4 text-left font-medium text-ink/50">—</th>
@@ -146,6 +173,24 @@ export function WallpaperContent() {
                   ))}
                 </tbody>
               </table>
+              {/* Mobile: stacked cards — a 3-column table has no room to
+                  breathe below ~640px and forces every word onto its own
+                  line, so this shows the same data as readable rows instead. */}
+              <div className="flex flex-col md:hidden">
+                {compare.map(row => (
+                  <div key={row.row} className="border-b border-ink/10 p-4 last:border-0">
+                    <p className="font-medium text-ink/70">{row.row}</p>
+                    <p className="mt-1.5 text-ink">
+                      <span className="text-ink/50">{lang === 'th' ? 'วอลเปเปอร์: ' : 'Wallpaper: '}</span>
+                      {row.wallpaper}
+                    </p>
+                    <p className="mt-1 text-ink">
+                      <span className="text-ink/50">{lang === 'th' ? 'ทาสี: ' : 'Paint: '}</span>
+                      {row.paint}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>
@@ -166,14 +211,30 @@ export function WallpaperContent() {
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectsEyebrow}</p>
           </FadeIn>
           <FadeIn stagger className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {projects.map(p => (
-              <FadeInItem key={p.name}>
-                <Link href={p.href} className="block h-full rounded-sm border border-ink/10 bg-[#FAF9F6] p-6 hover:border-sage/40">
-                  <h3 className="font-sarabun text-sm font-medium text-ink">{p.name}</h3>
-                  <p className="mt-1 font-sarabun text-[12px] text-ink/55">{p.desc}</p>
-                </Link>
-              </FadeInItem>
-            ))}
+            {projects.map((p, i) => {
+              const thumb = thumbFor(p.href)
+              return (
+                <FadeInItem key={i}>
+                  <Link href={p.href} className="block h-full overflow-hidden rounded-sm border border-ink/10 bg-[#FAF9F6] hover:border-sage/40">
+                    {thumb && (
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <Image
+                          src={thumb}
+                          alt={p.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="font-sarabun text-sm font-medium text-ink">{p.name}</h3>
+                      <p className="mt-1 font-sarabun text-[12px] text-ink/55">{p.desc}</p>
+                    </div>
+                  </Link>
+                </FadeInItem>
+              )
+            })}
           </FadeIn>
         </div>
       </section>
@@ -193,8 +254,8 @@ export function WallpaperContent() {
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
           </FadeIn>
           <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
-            {faq.map(item => (
-              <FadeInItem key={item.q}>
+            {faq.map((item, i) => (
+              <FadeInItem key={i}>
                 <div className="py-5">
                   <h3 className="font-sarabun text-[15px] font-medium text-ink">{item.q}</h3>
                   <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/65">{item.a}</p>

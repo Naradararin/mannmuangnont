@@ -4,20 +4,23 @@ import { useEffect, useState } from 'react'
 import { Phone } from 'lucide-react'
 import { SiLine, SiFacebook } from 'react-icons/si'
 import { useLang } from '@/lib/lang'
+import { trackContactClick } from '@/lib/analytics'
 
 const LINKS = {
   th: [
     { label: 'เกี่ยวกับเรา', href: '/#about' },
-    { label: 'สินค้า', href: '/#collections' },
     { label: 'ผลงาน', href: '/#portfolio' },
-    { label: 'รีวิว', href: '/#testimonials' },
+    { label: 'ผ้าม่าน', href: '/curtains' },
+    { label: 'วอลเปเปอร์', href: '/wallpaper' },
+    { label: 'กระเบื้องยาง', href: '/tiles' },
     { label: 'ติดต่อ', href: '/#contact' },
   ],
   en: [
     { label: 'About', href: '/#about' },
-    { label: 'Products', href: '/#collections' },
     { label: 'Portfolio', href: '/#portfolio' },
-    { label: 'Reviews', href: '/#testimonials' },
+    { label: 'Curtains', href: '/curtains' },
+    { label: 'Wallpaper', href: '/wallpaper' },
+    { label: 'Vinyl Flooring', href: '/tiles' },
     { label: 'Contact', href: '/#contact' },
   ],
 }
@@ -126,6 +129,7 @@ export function Navbar() {
             <a
               href="tel:0922294692"
               aria-label={lang === 'th' ? 'โทร' : 'Call'}
+              onClick={() => trackContactClick('call', 'navbar-desktop')}
               className="text-ink/50 transition-colors hover:text-sage"
             >
               <Phone size={15} />
@@ -135,6 +139,7 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LINE"
+              onClick={() => trackContactClick('line', 'navbar-desktop')}
               className="text-ink/50 transition-colors hover:text-[#06C755]"
             >
               <SiLine size={15} />
@@ -144,6 +149,7 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
+              onClick={() => trackContactClick('facebook', 'navbar-desktop')}
               className="text-ink/50 transition-colors hover:text-[#1877F2]"
             >
               <SiFacebook size={15} />
@@ -216,6 +222,7 @@ export function Navbar() {
                 <a
                   href="tel:0922294692"
                   aria-label={lang === 'th' ? 'โทร' : 'Call'}
+                  onClick={() => trackContactClick('call', 'navbar-mobile')}
                   className="flex h-11 items-center text-ink/55 transition-colors hover:text-sage"
                 >
                   <Phone size={18} />
@@ -225,6 +232,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LINE"
+                  onClick={() => trackContactClick('line', 'navbar-mobile')}
                   className="flex h-11 items-center text-ink/55 transition-colors hover:text-[#06C755]"
                 >
                   <SiLine size={18} />
@@ -234,6 +242,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
+                  onClick={() => trackContactClick('facebook', 'navbar-mobile')}
                   className="flex h-11 items-center text-ink/55 transition-colors hover:text-[#1877F2]"
                 >
                   <SiFacebook size={18} />

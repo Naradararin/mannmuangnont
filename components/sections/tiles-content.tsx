@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import { SiLine } from 'react-icons/si'
 import { FadeIn, FadeInItem } from '@/components/motion/fade-in'
@@ -86,15 +87,29 @@ export function TilesContent() {
   return (
     <main className="bg-canvas text-ink">
       {/* Hero / Intro */}
-      <section className="mx-auto max-w-[1000px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
-        <FadeIn>
-          <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
-            {c.h1}
-          </h1>
-          <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
-            {c.intro}
-          </p>
-        </FadeIn>
+      <section className="mx-auto max-w-[1280px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
+          <FadeIn>
+            <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
+              {c.h1}
+            </h1>
+            <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
+              {c.intro}
+            </p>
+          </FadeIn>
+          <FadeIn>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-sm">
+              <Image
+                src="/images/portfolio/wood-grain-05-06-26/713903471_1456402226500212_6142999916480279380_n.jpg"
+                alt={c.h1}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Features */}
@@ -103,8 +118,8 @@ export function TilesContent() {
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.featuresEyebrow}</p>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {features.map(f => (
-            <FadeInItem key={f.title}>
+          {features.map((f, i) => (
+            <FadeInItem key={i}>
               <div className="h-full rounded-sm border border-ink/10 bg-[#FAF9F6] p-6">
                 <h3 className="font-sarabun text-base font-medium text-ink">{f.title}</h3>
                 <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/65">{f.desc}</p>
@@ -149,9 +164,18 @@ export function TilesContent() {
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.projectEyebrow}</p>
             <Link
               href="/portfolio/wood-grain-2026-06"
-              className="mt-6 flex items-center justify-between rounded-sm border border-ink/10 bg-[#FAF9F6] p-6 hover:border-sage/40"
+              className="mt-6 flex items-center gap-5 overflow-hidden rounded-sm border border-ink/10 bg-[#FAF9F6] p-3 pr-6 hover:border-sage/40"
             >
-              <span className="font-sarabun text-base font-medium text-ink">{c.projectTitle}</span>
+              <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-sm">
+                <Image
+                  src="/images/portfolio/wood-grain-05-06-26/714570789_1456402183166883_944922821482411181_n.jpg"
+                  alt={c.projectTitle}
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                />
+              </div>
+              <span className="flex-1 font-sarabun text-base font-medium text-ink">{c.projectTitle}</span>
               <span className="font-dm-sans text-[13px] text-sage">{c.projectLinkLabel}</span>
             </Link>
           </FadeIn>
@@ -173,8 +197,8 @@ export function TilesContent() {
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
           </FadeIn>
           <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
-            {faq.map(item => (
-              <FadeInItem key={item.q}>
+            {faq.map((item, i) => (
+              <FadeInItem key={i}>
                 <div className="py-5">
                   <h3 className="font-sarabun text-[15px] font-medium text-ink">{item.q}</h3>
                   <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/65">{item.a}</p>

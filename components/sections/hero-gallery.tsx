@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import {
-  AnimatePresence,
   motion,
   useReducedMotion,
   useMotionValue,
@@ -362,39 +361,40 @@ function MobileHero({
       {/* Overlaid brand text + CTA (lower-left). Non-interactive areas let swipes
           pass through to the carousel; only the buttons/dots capture taps. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-9">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={lang}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.35 }}
-          >
-            <p className="font-dm-sans text-[10px] uppercase tracking-[0.2em] text-canvas/70">
-              {copy.eyebrow}
-            </p>
-            <p className="font-sov-wong mt-2 text-[44px] leading-[1.04] text-canvas drop-shadow-[0_1px_12px_rgba(20,18,15,0.35)]">
-              {copy.brand}
-            </p>
-            <p className="mt-2 font-sarabun text-[15px] font-light leading-[1.6] text-canvas/85">
-              {copy.tagline}
-            </p>
-            <div className="pointer-events-auto mt-5 flex items-center gap-4">
-              <a
-                href="#contact"
-                className="flex h-11 items-center rounded-full bg-canvas px-7 font-dm-sans text-[12px] tracking-[0.07em] text-ink shadow-[0_4px_20px_rgba(20,18,15,0.25)] transition-colors active:bg-canvas/90"
-              >
-                {copy.cta1}
-              </a>
-              <a
-                href="#portfolio"
-                className="font-dm-sans text-[12px] tracking-[0.07em] text-canvas/80 underline decoration-canvas/30 underline-offset-4"
-              >
-                {copy.cta2}
-              </a>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        {/* Plain reactive div — no animated reveal. This previously used
+            framer-motion's AnimatePresence + key={lang} to cross-fade between
+            Thai/English text, which never resolves on this Next 16 / React 19
+            stack (same underlying issue documented in navbar.tsx's mobile
+            menu): the exiting motion.div's exit animation never completes,
+            so AnimatePresence (mode="wait") never mounts the next one and
+            the text stays stuck invisible until a full page reload. Text
+            just swaps instantly and reliably now that `lang` changes. */}
+        <div>
+          <p className="font-dm-sans text-[10px] uppercase tracking-[0.2em] text-canvas/70">
+            {copy.eyebrow}
+          </p>
+          <p className="font-sov-wong mt-2 text-[44px] leading-[1.04] text-canvas drop-shadow-[0_1px_12px_rgba(20,18,15,0.35)]">
+            {copy.brand}
+          </p>
+          <p className="mt-2 font-sarabun text-[15px] font-light leading-[1.6] text-canvas/85">
+            {copy.tagline}
+          </p>
+          <div className="pointer-events-auto mt-5 flex items-center gap-4">
+            <a
+              href="#contact"
+              className="flex h-11 items-center rounded-full bg-canvas px-7 font-dm-sans text-[12px] tracking-[0.07em] text-ink shadow-[0_4px_20px_rgba(20,18,15,0.25)] transition-colors active:bg-canvas/90"
+            >
+              {copy.cta1}
+            </a>
+            <a
+              href="#portfolio"
+              className="font-dm-sans text-[12px] tracking-[0.07em] text-canvas/80 underline decoration-canvas/30 underline-offset-4"
+            >
+              {copy.cta2}
+            </a>
+          </div>
+        </div>
+
 
         {/* Page dots — indicate multiple swipeable images. */}
         <div className="pointer-events-auto mt-6 flex gap-2">
@@ -444,42 +444,37 @@ export function HeroGallery() {
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FAF9F6] via-[#FAF9F6]/95 to-transparent" />
         <div className="relative z-10">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={lang}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              <p className="font-dm-sans text-[10px] uppercase tracking-[0.22em] text-sage">
-                {copy.eyebrow}
-              </p>
-              <h1 className="font-sov-wong mt-3 text-[52px] leading-[1.05] text-ink xl:text-[62px]">
-                {copy.brand}
-              </h1>
-              <p className="mt-3 font-sarabun text-[15px] font-light leading-[1.65] text-ink/60">
-                {copy.tagline}
-              </p>
-              <p className="mt-2 whitespace-pre-line font-sarabun text-[12px] leading-[1.85] text-ink/40">
-                {copy.desc}
-              </p>
-              <div className="mt-6 flex flex-col gap-3">
-                <a
-                  href="#contact"
-                  className="flex h-10 w-fit items-center rounded-full border border-ink/30 px-6 font-dm-sans text-[12px] tracking-[0.08em] text-ink transition-colors hover:border-ink hover:bg-ink hover:text-canvas"
-                >
-                  {copy.cta1}
-                </a>
-                <a
-                  href="#portfolio"
-                  className="font-dm-sans text-[12px] tracking-[0.08em] text-ink/45 underline decoration-transparent underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/25"
-                >
-                  {copy.cta2}
-                </a>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+          {/* Plain reactive div — see the matching comment on the mobile
+              overlay above: AnimatePresence + key={lang} never resolves its
+              exit/enter transition on this stack, so it's removed here too. */}
+          <div>
+            <p className="font-dm-sans text-[10px] uppercase tracking-[0.22em] text-sage">
+              {copy.eyebrow}
+            </p>
+            <h1 className="font-sov-wong mt-3 text-[52px] leading-[1.05] text-ink xl:text-[62px]">
+              {copy.brand}
+            </h1>
+            <p className="mt-3 font-sarabun text-[15px] font-light leading-[1.65] text-ink/60">
+              {copy.tagline}
+            </p>
+            <p className="mt-2 whitespace-pre-line font-sarabun text-[12px] leading-[1.85] text-ink/40">
+              {copy.desc}
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <a
+                href="#contact"
+                className="flex h-10 w-fit items-center rounded-full border border-ink/30 px-6 font-dm-sans text-[12px] tracking-[0.08em] text-ink transition-colors hover:border-ink hover:bg-ink hover:text-canvas"
+              >
+                {copy.cta1}
+              </a>
+              <a
+                href="#portfolio"
+                className="font-dm-sans text-[12px] tracking-[0.08em] text-ink/45 underline decoration-transparent underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/25"
+              >
+                {copy.cta2}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 

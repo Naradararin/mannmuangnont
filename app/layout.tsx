@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Sarabun, Cormorant_Garamond, DM_Sans, Geist } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
@@ -86,6 +87,20 @@ const LOCAL_BUSINESS_JSONLD = {
     postalCode: '11140',
     addressCountry: 'TH',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 13.84009,
+    longitude: 100.3867221,
+  },
+  // Open every day, same hours (confirmed by shop owner).
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+    ],
+    opens: '06:00',
+    closes: '20:00',
+  },
   areaServed: ['นนทบุรี', 'บางใหญ่', 'บางบัวทอง', 'ราชพฤกษ์', 'ปากเกร็ด', 'บางกรวย'],
   sameAs: ['https://www.facebook.com/yandsun', 'https://line.me/ti/p/Hz-QrG-Dyo'],
 }
@@ -98,6 +113,22 @@ export default function RootLayout({
   return (
     <html lang="th" className={cn(sarabun.variable, cormorant.variable, dmSans.variable, ekkamai.variable, "font-sans", geist.variable)}>
       <body className="font-sarabun antialiased">
+        {/* Google Analytics (GA4) — loaded via next/script so it doesn't
+            block rendering. "afterInteractive" fires once the page is
+            interactive, which is the pattern Next.js recommends for
+            analytics tags. */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-LDN33MVFR9"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LDN33MVFR9');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_JSONLD) }}

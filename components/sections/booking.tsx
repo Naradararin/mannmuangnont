@@ -4,6 +4,7 @@ import { Phone } from 'lucide-react'
 import { SiLine, SiFacebook } from 'react-icons/si'
 import { FadeIn } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
+import { trackContactClick, channelFromHref } from '@/lib/analytics'
 
 const BOKEH = Array.from({ length: 22 }, (_, i) => ({
   left: `${(i * 97 + 11) % 100}%`,
@@ -113,6 +114,7 @@ export function Booking() {
                   href={ch.href}
                   target={isExternal ? '_blank' : undefined}
                   rel={isExternal ? 'noopener noreferrer' : undefined}
+                  onClick={() => trackContactClick(channelFromHref(ch.href), 'booking')}
                   className="group flex items-center gap-5 rounded-sm border p-5 transition-all duration-300 hover:scale-[1.015]"
                   style={{ borderColor: s.border, backgroundColor: s.bg }}
                 >

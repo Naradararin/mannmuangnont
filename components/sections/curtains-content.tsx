@@ -1,11 +1,25 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import { SiLine } from 'react-icons/si'
 import { FadeIn, FadeInItem } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 import { CURTAINS_FAQ as FAQ } from '@/components/sections/curtains-faq'
+import { PORTFOLIO } from '@/lib/portfolio-data'
+
+// Looks up the first real project photo for a given portfolio id, so type
+// cards below show an actual installed example instead of staying text-only.
+// thep-rak-49 lives on its own standalone page (not in the PORTFOLIO array),
+// so it needs an explicit fallback path.
+const THEP_RAK_49_FALLBACK = '/images/portfolio/thep-rak-49/Inside the house/473188.jpg'
+
+function thumbFor(portfolioHref: string): string | undefined {
+  const id = portfolioHref.replace('/portfolio/', '')
+  if (id === 'thep-rak-49') return THEP_RAK_49_FALLBACK
+  return PORTFOLIO.find(p => p.id === id)?.imageUrls[0]
+}
 
 // ---------------------------------------------------------------------------
 // All facts on this page are drawn from real completed projects in
@@ -61,7 +75,7 @@ const PROPERTY_TYPES = {
     { name: 'บ้านหรู / คฤหาสน์', desc: 'งานพรีเมียมพร้อมระบบมอเตอร์ไฟฟ้าที่เทพรักษ์ 49 กรุงเทพ' },
   ],
   en: [
-    { name: 'Condominiums', desc: 'Experienced with multiple condo projects in Ladprao-Wanghin, Kaset-Sriปทุม, and Sathorn — familiar with condo space constraints and juristic-person installation procedures.' },
+    { name: 'Condominiums', desc: 'Experienced with multiple condo projects in Ladprao-Wanghin, Kaset-Sri Pathum, and Sathorn — familiar with condo space constraints and juristic-person installation procedures.' },
     { name: 'Detached Houses', desc: 'Most of our projects fall in this group, e.g. Baan Wang Jaru Nonthaburi, Nichatra Bangkok, Chichakorn Kaewin Nonthaburi.' },
     { name: 'Townhouses', desc: 'Real example: a commercial building on the Chao Phraya riverside, Pathum Thani.' },
     { name: 'Knock-down Houses', desc: 'Real example: The Village Hathairat-Wongwaen, Bangkok.' },
@@ -136,15 +150,29 @@ export function CurtainsContent() {
   return (
     <main className="bg-canvas text-ink">
       {/* Hero / Intro */}
-      <section className="mx-auto max-w-[1000px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
-        <FadeIn>
-          <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
-            {c.h1}
-          </h1>
-          <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
-            {c.intro}
-          </p>
-        </FadeIn>
+      <section className="mx-auto max-w-[1280px] px-6 pb-10 pt-[140px] md:px-10 md:pt-[168px]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
+          <FadeIn>
+            <h1 className={`text-[32px] leading-[1.25] text-ink md:text-[48px] ${headingFont}`}>
+              {c.h1}
+            </h1>
+            <p className="mt-6 font-sarabun text-[15px] leading-[1.9] text-ink/70">
+              {c.intro}
+            </p>
+          </FadeIn>
+          <FadeIn>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-sm">
+              <Image
+                src="/images/hero/473278.jpg"
+                alt={c.h1}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Curtain types grid */}
@@ -153,17 +181,33 @@ export function CurtainsContent() {
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.typesEyebrow}</p>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {types.map(t => (
-            <FadeInItem key={t.name}>
-              <div className="flex h-full flex-col rounded-sm border border-ink/10 bg-[#FAF9F6] p-6">
-                <h3 className="font-sarabun text-base font-medium text-ink">{t.name}</h3>
-                <p className="mt-2 flex-1 font-sarabun text-[13px] leading-[1.8] text-ink/65">{t.desc}</p>
-                <Link href={t.href} className="mt-4 font-dm-sans text-[11px] uppercase tracking-[0.1em] text-sage hover:underline">
-                  {t.linkLabel} →
-                </Link>
-              </div>
-            </FadeInItem>
-          ))}
+          {types.map((t, i) => {
+            const thumb = thumbFor(t.href)
+            return (
+              <FadeInItem key={i}>
+                <div className="flex h-full flex-col overflow-hidden rounded-sm border border-ink/10 bg-[#FAF9F6]">
+                  {thumb && (
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={thumb}
+                        alt={t.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="font-sarabun text-base font-medium text-ink">{t.name}</h3>
+                    <p className="mt-2 flex-1 font-sarabun text-[13px] leading-[1.8] text-ink/65">{t.desc}</p>
+                    <Link href={t.href} className="mt-4 font-dm-sans text-[11px] uppercase tracking-[0.1em] text-sage hover:underline">
+                      {t.linkLabel} →
+                    </Link>
+                  </div>
+                </div>
+              </FadeInItem>
+            )
+          })}
         </FadeIn>
       </section>
 
@@ -173,7 +217,8 @@ export function CurtainsContent() {
           <FadeIn>
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.fabricEyebrow}</p>
             <div className="mt-8 overflow-hidden rounded-sm border border-ink/10">
-              <table className="w-full border-collapse font-sarabun text-[13px]">
+              {/* Desktop / tablet: real table */}
+              <table className="hidden w-full border-collapse font-sarabun text-[13px] md:table">
                 <tbody>
                   {c.fabricTable.map(row => (
                     <tr key={row.label} className="border-b border-ink/10 last:border-0">
@@ -194,6 +239,28 @@ export function CurtainsContent() {
                   ))}
                 </tbody>
               </table>
+              {/* Mobile: stacked cards — a 3-column table has no room to
+                  breathe below ~640px and forces every word onto its own
+                  line, so this shows the same data as readable rows instead. */}
+              <div className="flex flex-col md:hidden">
+                {c.fabricTable.map(row => (
+                  <div key={row.label} className="border-b border-ink/10 bg-[#FAF9F6] p-4 last:border-0">
+                    <p className="font-medium text-ink">{row.label}</p>
+                    <p className="mt-1.5 text-ink/70">{row.pct}</p>
+                    <p className="mt-1.5 text-ink/70">
+                      {row.use}
+                      {row.href ? (
+                        <>
+                          {' — '}
+                          <Link href={row.href} className="text-sage hover:underline">{row.ref}</Link>
+                        </>
+                      ) : (
+                        <span className="block text-ink/50">{row.ref}</span>
+                      )}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>
@@ -205,8 +272,8 @@ export function CurtainsContent() {
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.directionEyebrow}</p>
         </FadeIn>
         <FadeIn stagger className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {dirs.map(d => (
-            <FadeInItem key={d.dir}>
+          {dirs.map((d, i) => (
+            <FadeInItem key={i}>
               <div className="h-full rounded-sm border border-ink/10 p-6">
                 <h3 className="font-sarabun text-base font-medium text-ink">{d.dir}</h3>
                 <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/60">{d.sun}</p>
@@ -224,8 +291,8 @@ export function CurtainsContent() {
             <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.propertyEyebrow}</p>
           </FadeIn>
           <FadeIn stagger className="mt-8 space-y-6">
-            {props.map(p => (
-              <FadeInItem key={p.name}>
+            {props.map((p, i) => (
+              <FadeInItem key={i}>
                 <h3 className="font-sarabun text-base font-medium text-ink">{p.name}</h3>
                 <p className="mt-1 font-sarabun text-[13px] leading-[1.8] text-ink/65">{p.desc}</p>
               </FadeInItem>
@@ -276,8 +343,8 @@ export function CurtainsContent() {
           <p className="font-dm-sans text-[11px] uppercase tracking-[0.2em] text-sage">{c.faqEyebrow}</p>
         </FadeIn>
         <FadeIn stagger className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
-          {faq.map(item => (
-            <FadeInItem key={item.q}>
+          {faq.map((item, i) => (
+            <FadeInItem key={i}>
               <div className="py-5">
                 <h3 className="font-sarabun text-[15px] font-medium text-ink">{item.q}</h3>
                 <p className="mt-2 font-sarabun text-[13px] leading-[1.8] text-ink/65">{item.a}</p>
