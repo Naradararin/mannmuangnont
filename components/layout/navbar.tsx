@@ -81,8 +81,10 @@ export function Navbar() {
         {/* Logo */}
         <a href="/" className="flex items-center gap-2.5">
           <img
-            src="/images/brand/logo.png"
+            src="/images/brand/logo-icon.webp"
             alt="ม่านเมืองนนท์"
+            width={56}
+            height={56}
             className="h-11 w-auto object-contain md:h-14"
           />
           <span className="font-sov-wong whitespace-nowrap text-xl text-ink sm:text-2xl">

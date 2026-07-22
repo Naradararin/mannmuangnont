@@ -58,8 +58,10 @@ export function Footer() {
                 style={{ background: 'rgba(245,241,232,0.10)' }}
               >
                 <img
-                  src="/images/brand/logo.png"
+                  src="/images/brand/logo-icon.webp"
                   alt="ม่านเมืองนนท์"
+                  width={28}
+                  height={28}
                   className="h-7 w-auto object-contain"
                 />
               </span>
