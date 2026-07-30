@@ -5,9 +5,9 @@ import { FadeIn, FadeInItem } from '@/components/motion/fade-in'
 import { useLang } from '@/lib/lang'
 
 const COLLECTION_IMAGES = [
-  { src: '/images/collection/curtains.png', objectPosition: 'center 40%' },
-  { src: '/images/collection/wallpaper.png', objectPosition: 'center center' },
-  { src: '/images/collection/tiles.png', objectPosition: 'center 60%' },
+  { src: '/images/collection/curtains.webp', objectPosition: 'center 40%' },
+  { src: '/images/collection/wallpaper.webp', objectPosition: 'center center' },
+  { src: '/images/collection/tiles.webp', objectPosition: 'center 60%' },
 ]
 
 // Portfolio category (Thai key used by PortfolioGallery's filter), parallel to
