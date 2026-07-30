@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useLang } from '@/lib/lang'
+import { useInView } from '@/lib/use-in-view'
 import { Navbar } from '@/components/layout/navbar'
 import { Lightbox } from '@/components/ui/lightbox'
 import { PORTFOLIO } from '@/lib/portfolio-data'
@@ -120,6 +121,21 @@ function CategoryCard({
   const [idx, setIdx] = useState(0)
   const { images, folder, label } = category
   const total = images.length
+  const { ref, inView } = useInView<HTMLDivElement>()
+  const shouldRender = priority || inView
+
+  // Thumbnail strips can run 20-30 images deep (e.g. "Inside the house"); only
+  // mount enough <Image>s to fill the visible strip, extending as the user
+  // scrolls right, so a single card never fires a huge burst of image requests.
+  const THUMB_BATCH = 10
+  const [thumbCount, setThumbCount] = useState(Math.min(total, THUMB_BATCH))
+  function onThumbScroll(e: React.UIEvent<HTMLDivElement>) {
+    if (thumbCount >= total) return
+    const el = e.currentTarget
+    if (el.scrollWidth - (el.scrollLeft + el.clientWidth) < 200) {
+      setThumbCount(c => Math.min(total, c + THUMB_BATCH))
+    }
+  }
 
   function prev() { setIdx(i => (i - 1 + total) % total) }
   function next() { setIdx(i => (i + 1) % total) }
@@ -128,114 +144,125 @@ function CategoryCard({
 
   return (
     <div
+      ref={ref}
       className="overflow-hidden rounded-sm"
       style={{ background: L.card, border: `1px solid ${L.border}` }}
     >
-      {/* ── Cover (click to open full-screen lightbox) ──────────── */}
-      <div
-        className="img-skeleton-dark relative aspect-[4/3] cursor-zoom-in overflow-hidden"
-        onClick={() => onOpen(idx)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(idx) } }}
-        aria-label={lang === 'th' ? `ดูรูป ${label.th} แบบเต็มจอ` : `View ${label.en} full screen`}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activeSrc}
-            className="absolute inset-0"
-            initial={noMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={noMotion ? {} : { opacity: 0 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
+      {!shouldRender ? (
+        <>
+          <div className="img-skeleton-dark aspect-[4/3]" />
+          <div className="h-[62px]" style={{ background: L.card }} />
+        </>
+      ) : (
+        <>
+          {/* ── Cover (click to open full-screen lightbox) ──────────── */}
+          <div
+            className="img-skeleton-dark relative aspect-[4/3] cursor-zoom-in overflow-hidden"
+            onClick={() => onOpen(idx)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(idx) } }}
+            aria-label={lang === 'th' ? `ดูรูป ${label.th} แบบเต็มจอ` : `View ${label.en} full screen`}
           >
-            <Image
-              src={activeSrc}
-              alt={`${label[lang]} ${idx + 1}`}
-              fill
-              quality={85}
-              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
-              priority={priority && idx === 0}
-              className="object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={activeSrc}
+                className="absolute inset-0"
+                initial={noMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={noMotion ? {} : { opacity: 0 }}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
+              >
+                <Image
+                  src={activeSrc}
+                  alt={`${label[lang]} ${idx + 1}`}
+                  fill
+                  quality={85}
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                  priority={priority && idx === 0}
+                  className="object-cover"
+                />
+              </motion.div>
+            </AnimatePresence>
 
-        {/* Counter badge */}
-        <div
-          className="absolute right-3 top-3 rounded-full px-2.5 py-1 font-dm-sans text-[10px] tracking-[0.06em]"
-          style={{
-            background: 'rgba(13,10,5,0.68)',
-            color: L.champ,
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-          }}
-        >
-          {idx + 1}&thinsp;/&thinsp;{total}
-        </div>
+            {/* Counter badge */}
+            <div
+              className="absolute right-3 top-3 rounded-full px-2.5 py-1 font-dm-sans text-[10px] tracking-[0.06em]"
+              style={{
+                background: 'rgba(13,10,5,0.68)',
+                color: L.champ,
+                backdropFilter: 'blur(6px)',
+                WebkitBackdropFilter: 'blur(6px)',
+              }}
+            >
+              {idx + 1}&thinsp;/&thinsp;{total}
+            </div>
 
-        {/* Prev arrow */}
-        {total > 1 && (
-          <button
-            onClick={e => { e.stopPropagation(); prev() }}
-            className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
-            style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
-            aria-label="Previous image"
+            {/* Prev arrow */}
+            {total > 1 && (
+              <button
+                onClick={e => { e.stopPropagation(); prev() }}
+                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
+                style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+                aria-label="Previous image"
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <path d="M8 2.5L3.5 6.5 8 10.5" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
+
+            {/* Next arrow */}
+            {total > 1 && (
+              <button
+                onClick={e => { e.stopPropagation(); next() }}
+                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
+                style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+                aria-label="Next image"
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <path d="M5 2.5L9.5 6.5 5 10.5" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* ── Thumbnail strip ──────────────────────────────────────── */}
+          <div
+            className="flex gap-1.5 overflow-x-auto px-3 py-2.5"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
+            onScroll={onThumbScroll}
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M8 2.5L3.5 6.5 8 10.5" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        )}
-
-        {/* Next arrow */}
-        {total > 1 && (
-          <button
-            onClick={e => { e.stopPropagation(); next() }}
-            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-opacity hover:opacity-90"
-            style={{ background: 'rgba(13,10,5,0.60)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
-            aria-label="Next image"
-          >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M5 2.5L9.5 6.5 5 10.5" stroke={L.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        )}
-      </div>
-
-      {/* ── Thumbnail strip ──────────────────────────────────────── */}
-      <div
-        className="flex gap-1.5 overflow-x-auto px-3 py-2.5"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
-      >
-        {images.map((file, i) => (
-          <button
-            key={file}
-            onClick={() => setIdx(i)}
-            aria-label={`Image ${i + 1}`}
-            className="relative shrink-0 overflow-hidden rounded-[3px] transition-opacity"
-            style={{
-              width: 42,
-              height: 42,
-              background: L.slot,
-              outline: i === idx
-                ? `1.5px solid ${L.gold}`
-                : `1px solid rgba(201,168,76,0.12)`,
-              opacity: i === idx ? 1 : 0.55,
-            }}
-          >
-            <Image
-              src={imgSrc(folder, file)}
-              alt=""
-              fill
-              sizes="42px"
-              quality={30}
-              loading="lazy"
-              className="object-cover"
-            />
-          </button>
-        ))}
-      </div>
+            {images.slice(0, Math.max(thumbCount, idx + 1)).map((file, i) => (
+              <button
+                key={file}
+                onClick={() => setIdx(i)}
+                aria-label={`Image ${i + 1}`}
+                className="relative shrink-0 overflow-hidden rounded-[3px] transition-opacity"
+                style={{
+                  width: 42,
+                  height: 42,
+                  background: L.slot,
+                  outline: i === idx
+                    ? `1.5px solid ${L.gold}`
+                    : `1px solid rgba(201,168,76,0.12)`,
+                  opacity: i === idx ? 1 : 0.55,
+                }}
+              >
+                <Image
+                  src={imgSrc(folder, file)}
+                  alt=""
+                  fill
+                  sizes="42px"
+                  quality={30}
+                  loading="lazy"
+                  className="object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* ── Meta ────────────────────────────────────────────────── */}
       <div className="px-4 pb-5 pt-1.5">

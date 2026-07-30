@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLang } from '@/lib/lang'
+import { useInView } from '@/lib/use-in-view'
 import { Navbar } from '@/components/layout/navbar'
 import { PortfolioEntry, Tier } from '@/lib/portfolio-data'
 
@@ -225,6 +226,7 @@ function Gallery({ images, altBase, theme, lang, skeleton }: { images: string[];
   const [idx, setIdx] = useState(0)
   const total = images.length
   const touchX = useRef<number | null>(null)
+  const { ref: thumbsRef, inView: thumbsInView } = useInView<HTMLDivElement>()
 
   if (total === 0) {
     return (
@@ -294,8 +296,12 @@ function Gallery({ images, altBase, theme, lang, skeleton }: { images: string[];
       </div>
 
       {total > 1 && (
-        <div className="mx-auto mt-2 flex max-w-[560px] gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-          {images.map((url, i) => (
+        <div
+          ref={thumbsRef}
+          className="mx-auto mt-2 flex max-w-[560px] gap-1.5 overflow-x-auto pb-1"
+          style={{ scrollbarWidth: 'none', minHeight: 56 }}
+        >
+          {thumbsInView && images.map((url, i) => (
             <button
               key={url}
               onClick={() => setIdx(i)}
