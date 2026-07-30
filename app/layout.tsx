@@ -39,7 +39,7 @@ const ekkamai = localFont({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://mannmuangnont.vercel.app'),
+  metadataBase: new URL('https://maanmuangnont.com'),
   title: {
     default: 'ผ้าม่าน นนทบุรี ติดตั้งวอลเปเปอร์ กระเบื้อง | ม่านเมืองนนท์',
     template: '%s | ม่านเมืองนนท์',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'th_TH',
-    url: 'https://mannmuangnont.vercel.app',
+    url: 'https://maanmuangnont.com',
     siteName: 'ม่านเมืองนนท์',
     title: 'ผ้าม่าน นนทบุรี ติดตั้งวอลเปเปอร์ กระเบื้อง | ม่านเมืองนนท์',
     description:
@@ -76,9 +76,9 @@ const LOCAL_BUSINESS_JSONLD = {
   name: 'ม่านเมืองนนท์',
   description:
     'ร้านผ้าม่าน วอลเปเปอร์ และกระเบื้อง ออกแบบ-ติดตั้งครบวงจรในนนทบุรี สำรวจหน้างานฟรี',
-  url: 'https://mannmuangnont.vercel.app',
+  url: 'https://maanmuangnont.com',
   telephone: '+66-92-229-4692',
-  image: 'https://mannmuangnont.vercel.app/images/brand/logo.png',
+  image: 'https://maanmuangnont.com/images/brand/logo.png',
   address: {
     '@type': 'PostalAddress',
     streetAddress: '55/76 หมู่ที่ 1',
@@ -103,6 +103,13 @@ const LOCAL_BUSINESS_JSONLD = {
   },
   areaServed: ['นนทบุรี', 'บางใหญ่', 'บางบัวทอง', 'ราชพฤกษ์', 'ปากเกร็ด', 'บางกรวย'],
   sameAs: ['https://www.facebook.com/yandsun', 'https://line.me/ti/p/Hz-QrG-Dyo'],
+  // Sourced from verified Google Business Profile reviews. Update reviewCount/ratingValue
+  // as new reviews come in — do not let this drift out of sync with the real GBP numbers.
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5.0',
+    reviewCount: '12',
+  },
 }
 
 export default function RootLayout({

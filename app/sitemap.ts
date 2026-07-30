@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { PORTFOLIO, detailPath } from '@/lib/portfolio-data'
 
-const BASE = 'https://mannmuangnont.vercel.app'
+const BASE = 'https://maanmuangnont.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const portfolio = PORTFOLIO.filter(e => !e.isPlaceholder).map(e => ({

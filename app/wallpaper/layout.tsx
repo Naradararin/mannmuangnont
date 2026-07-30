@@ -32,7 +32,7 @@ const SERVICE_JSONLD = {
   provider: {
     '@type': 'HomeAndConstructionBusiness',
     name: 'ม่านเมืองนนท์',
-    url: 'https://mannmuangnont.vercel.app',
+    url: 'https://maanmuangnont.com',
   },
 }
 

@@ -48,11 +48,11 @@ function entryJsonLd(entry: PortfolioEntry) {
       '@type': 'Place',
       name: `${entry.location.th} ${entry.province.th}`,
     },
-    image: entry.imageUrls.map(u => `https://mannmuangnont.vercel.app${u}`),
+    image: entry.imageUrls.map(u => `https://maanmuangnont.com${u}`),
     creator: {
       '@type': 'Organization',
       name: 'ม่านเมืองนนท์',
-      url: 'https://mannmuangnont.vercel.app',
+      url: 'https://maanmuangnont.com',
     },
   }
 }
